@@ -1,0 +1,93 @@
+<resources>
+    <string name="app_name">Kid Clothes Store</string>
+    <string name="action_shopping_cart">Cart</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+    <string-array name="navigation_menu_items_array">
+        <item>FAQ</item>
+        <item>Shopping Guide</item>
+        <item>Shipping Costs</item>
+        <item>Contact</item>
+    </string-array>
+
+    <string-array name="sort_options_array">
+        <item>PRECIO: DE MÁS CARO A MÁS BARATO</item>
+        <item>PRECIO: DE MÁS BARATO A MÁS CARO</item>
+        <item>NOMBRE A-Z</item>
+        <item>NOMBRE Z-A</item>
+    </string-array>
+
+
+    <string name="filter">FILTRAR</string>
+    <string name="sort">ORDENAR</string>
+    <string name="size">TALLA</string>
+    <string name="size_guide">GUÍA DE TALLAS</string>
+
+
+    <string name="shopping_cart_tittle">Mi carrito</string>
+    <string name="total_productos">TOTAL PRODUCTOS</string>
+    <string name="total">TOTAL</string>
+    <string name="included_taxes">IMPUESTOS INCLUIDOS</string>
+    <string name="keep_buying">CONTINUAR COMPRA</string>
+    <string name="empty_cart">El carrito esta vacio</string>
+
+
+    <string name="login_title">Identifícate / Regístrate</string>
+    <string name="login_subtitle">IDENTIFÍCATE</string>
+    <string name="login_email">Email*</string>
+    <string name="login_password">Contraseña*</string>
+    <string name="login_password_forgoten">¿Olidaste la contraseña?</string>
+    <string name="login_button_label">ACCEDER</string>
+
+    <string name="login_join_subtitle">REGÍSTRATE</string>
+    <string name="login_join_text_1">Crea una cuenta en </string>
+    <string name="login_join_text_2"> para acceder rapidamente a tus pedidos y compras mas rápidas y comodamente</string>
+    <string name="login_join_button_label">CREA UNA NUEVA CUENTA</string>
+
+    <string name="join_title">INFORMACION PERSONAL</string>
+    <string name="join_name">Nombre*</string>
+    <string name="join_last_name">Apellidos*</string>
+    <string name="join_email">Email*</string>
+    <string name="join_NIF">NIF*</string>
+    <string name="join_tef_number">+34XXXXXXXXX</string>
+    <string name="join_password">Contraseña*</string>
+    <string name="join_confirm_password">Confirma Contraseña*</string>
+    <string name="acept_privacy_policy">He leido y acepto la politica de privacidad</string>
+    <string name="privacy_policy">Politica de Privacidad</string>
+    <string name="join_button_label">ENVIAR</string>
+
+    <string name="login_faild">Usuario/Password no valido</string>
+
+    <string name="join_message">Version demo, emplee: email: scarlett@theam.io, password: demodemo</string>
+    <string name="profile_title">INFORMACION PERSONAL</string>
+    <string name="profile_save_button_label">GUARDAR</string>
+    <string name="profile_login_label">INICIAR SESIÓN</string>
+    <string name="profile_logout_label">DESCONECTAR</string>
+
+
+    <string name="modification_not_available">La modificación de los datos no esta disponible</string>
+    <string name="wish_list_not_available">Lista de deseos desactivada</string>
+    <string name="sizes_guide_not_available">Guía de tallas no disponible</string>
+
+    <string-array name="color_array">
+        <item>Azul</item>
+        <item>Verde</item>
+        <item>Crudo</item>
+        <item>Granate</item>
+        <item>Negro</item>
+        <item>Blanco</item>
+        <item>Denim</item>
+        <item>Marrón</item>
+    </string-array>
+
+    <string-array name="size_array">
+        <item>1-2</item>
+        <item>2-3</item>
+        <item>3-4</item>
+        <item>4-5</item>
+        <item>5-6</item>
+    </string-array>
+
+</resources>

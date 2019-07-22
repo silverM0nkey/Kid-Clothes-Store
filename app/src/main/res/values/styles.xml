@@ -1,0 +1,31 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/main_400</item>
+        <item name="colorPrimaryDark">@color/main_800</item>
+        <item name="colorAccent">@color/main_A400</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="ListStyle">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="FormTextEditStyle">
+        <item name="android:textSize">12dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">@drawable/button_border</item>
+    </style>
+
+    <style name="PersonalInfTextEditStyle">
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">@drawable/button_border</item>
+    </style>
+
+</resources>
