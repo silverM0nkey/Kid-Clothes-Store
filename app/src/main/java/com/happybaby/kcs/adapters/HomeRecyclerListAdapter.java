@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.happybaby.kcs.R;
-import com.happybaby.kcs.fragments.CatalogFragment;
+import com.happybaby.kcs.fragments.interfaces.CatalogListener;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseHome;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseHomeCategory;
 import com.squareup.picasso.Picasso;
@@ -22,19 +22,17 @@ public class HomeRecyclerListAdapter extends
 
     protected Activity activity;
     protected List<ResponseHomeCategory> homeCategories;
-    protected CatalogFragment catalogFragment;
+    protected CatalogListener changeStatusListener;
 
-
-    public HomeRecyclerListAdapter(Activity activity, CatalogFragment catalogFragment, ResponseHome dataHome) {
+    public HomeRecyclerListAdapter(Activity activity, CatalogListener changeStatusListener, ResponseHome dataHome) {
         this.activity = activity;
-        this.catalogFragment = catalogFragment;
+        this.changeStatusListener = changeStatusListener;
         this.homeCategories = dataHome.getCategories();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageCategory;
         public TextView nameCategory;
-
 
         public ViewHolder(View v) {
             super(v);
@@ -45,15 +43,12 @@ public class HomeRecyclerListAdapter extends
 
     @Override
     public void onBindViewHolder(HomeRecyclerListAdapter.ViewHolder viewHolder, int position) {
-        ResponseHomeCategory dir = homeCategories.get(position);
-        Picasso.get().load(dir.getImageUrl()).placeholder(ContextCompat.getDrawable(activity, R.drawable.image_not_found))
+        ResponseHomeCategory homeCategory = homeCategories.get(position);
+        Picasso.with(activity).load(homeCategory.getImageUrl()).placeholder(ContextCompat.getDrawable(activity, R.drawable.image_not_found))
                 .error(ContextCompat.getDrawable(activity, R.drawable.image_not_found)).into(viewHolder.imageCategory);
-        viewHolder.nameCategory.setText(dir.getLabel());
-        viewHolder.imageCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                catalogFragment.setCategory(dir.getCategoryId(), dir.getLabel());
-            }
+        viewHolder.nameCategory.setText(homeCategory.getLabel());
+        viewHolder.imageCategory.setOnClickListener(View -> {
+                changeStatusListener.onChangeCategory(homeCategory.getCategoryId(), homeCategory.getLabel());
         });
     }
 

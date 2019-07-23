@@ -25,13 +25,13 @@ import retrofit2.http.QueryMap;
 
 public interface RestClient {
 
-    static final String PARAM_FILTERS = "filters";
-    static final String PARAM_WITH_TEXT = "with_text";
-    static final String PARAM_CATEGORY_ID = "category_id";
-    static final String PARAM_ORDER = "order";
-    static final String PARAM_DIR = "dir";
-    static final String PARAM_PAGE = "page";
-    static final String PARAM_LIMIT = "limit";
+    String PARAM_FILTERS = "filters";
+    String PARAM_WITH_TEXT = "with_text";
+    String PARAM_CATEGORY_ID = "category_id";
+    String PARAM_ORDER = "order";
+    String PARAM_DIR = "dir";
+    String PARAM_PAGE = "page";
+    String PARAM_LIMIT = "limit";
 
     @GET("stores/{storeId}/faq")
     Call<ResponseGeneralInfo> getFaq(@Path("storeId") String storeId);
@@ -61,12 +61,12 @@ public interface RestClient {
     Call<ResponseHome> getHome(@Path("storeId") String storeId);
 
     @POST("/stores/{storeId}/customers")
-    void postCustumer(@Path("storeId") String storeId, @Body RequestPostCustomer requestPostCustomer);
+    void postCustomer(@Path("storeId") String storeId, @Body RequestPostCustomer requestPostCustomer);
 
     @POST("/stores/{storeId}/customer/authorization/token")
-    Call<ResponseLogin> login(@Path("storeId") String storeId, @Body RequestLogin requestLoguin);
+    Call<ResponseLogin> login(@Path("storeId") String storeId, @Body RequestLogin requestLogin);
 
     @GET("/stores/{storeId}/customer")
-    Call<ResponseCustomer> getCustumer(@Path("storeId") String storeId,   @Header("Authorization") String auth);
+    Call<ResponseCustomer> getCustomer(@Path("storeId") String storeId, @Header("Authorization") String auth);
 
 }

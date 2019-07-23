@@ -32,8 +32,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         name = rootView.findViewById(R.id.name);
@@ -49,7 +48,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         login.setOnClickListener(this);
 
         return rootView;
-
     }
 
     public void onClick(View view) {
@@ -73,7 +71,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     public void setUp() {
-        if (CustomerProfile.getCustomerProfile().getEmail().equals(CustomerProfile.CUSTOMER_ANONIMOUS)) {
+        if (CustomerProfile.getCustomerProfile().getEmail().equals(CustomerProfile.CUSTOMER_ANONYMOUS)) {
             name.setVisibility(View.GONE);
             lastName.setVisibility(View.GONE);
             email.setVisibility(View.GONE);

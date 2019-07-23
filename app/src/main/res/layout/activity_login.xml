@@ -15,18 +15,15 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp">
+        style="@style/MainLayout">
 
         <TextView
             android:id="@+id/login_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:text="@string/login_subtitle"
-            android:textSize="14dp"
-            android:textStyle="bold"
+            style="@style/TileStyle"
+            app:layout_constraintBottom_toTopOf="@+id/email"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -36,9 +33,10 @@
             style="@style/FormTextEditStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:hint="@string/login_email"
             android:inputType="textEmailAddress"
+            android:layout_marginBottom="@dimen/general_margin_bottom"
+            app:layout_constraintBottom_toTopOf="@+id/password"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_subtitle" />
@@ -48,20 +46,22 @@
             style="@style/FormTextEditStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:hint="@string/login_password"
             android:inputType="textPassword"
+            android:layout_marginBottom="@dimen/general_margin_bottom"
+            app:layout_constraintBottom_toTopOf="@+id/password_forgotten"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email" />
 
         <TextView
-            android:id="@+id/password_forgoten"
+            android:id="@+id/password_forgotten"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/login_password_forgoten"
-            android:textSize="10dp"
+            android:text="@string/login_password_forgotten"
+            android:textSize="@dimen/text_size_s"
+            android:layout_marginBottom="@dimen/general_margin_bottom"
+            app:layout_constraintBottom_toTopOf="@+id/login_button"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password" />
@@ -70,23 +70,24 @@
             android:id="@+id/login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/general_margin_bottom"
             android:background="@drawable/button_border"
             android:text="@string/login_button_label"
             android:textColor="@color/black_absolute"
             android:textStyle="normal"
+            app:layout_constraintBottom_toTopOf="@+id/login_join_subtitle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password_forgoten" />
+            app:layout_constraintTop_toBottomOf="@+id/password_forgotten" />
 
         <TextView
             android:id="@+id/login_join_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="@dimen/general_margin_top"
+            style="@style/TileStyle"
             android:text="@string/login_join_subtitle"
-            android:textSize="14dp"
-            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/login_join_text"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_button" />
@@ -95,9 +96,9 @@
             android:id="@+id/login_join_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:gravity="center_horizontal"
-            android:textSize="13dp"
+            android:layout_marginBottom="@dimen/general_margin_bottom"
+            app:layout_constraintBottom_toTopOf="@+id/join_button"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_join_subtitle"/>
@@ -107,7 +108,7 @@
             android:id="@+id/join_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="@dimen/big_margin_top"
             android:background="@drawable/button_border"
             android:text="@string/login_join_button_label"
             android:textColor="@color/black_absolute"

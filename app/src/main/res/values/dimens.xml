@@ -1,4 +1,22 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="badge_text_size">10dp</dimen>
+
+    <dimen name="text_size_s">12sp</dimen>
+    <dimen name="text_size_m">14sp</dimen>
+    <dimen name="text_size_l">16sp</dimen>
+    <dimen name="text_size_xl">18sp</dimen>
+
+    <dimen name="main_layout_margin_top">10sp</dimen>
+    <dimen name="main_layout_margin_bottom">10sp</dimen>
+    <dimen name="main_layout_margin_right">10sp</dimen>
+    <dimen name="main_layout_margin_left">10sp</dimen>
+
+    <dimen name="general_margin_top">10dp</dimen>
+    <dimen name="general_margin_left">10dp</dimen>
+    <dimen name="big_margin_top">20dp</dimen>
+    <dimen name="big_margin_bottom">20dp</dimen>
+    <dimen name="general_margin_bottom">10dp</dimen>
+    <dimen name="title_margin_bottom">20dp</dimen>
+
 </resources>

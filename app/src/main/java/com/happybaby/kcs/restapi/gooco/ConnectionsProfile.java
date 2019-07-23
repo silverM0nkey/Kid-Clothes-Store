@@ -4,7 +4,8 @@ public class ConnectionsProfile {
 
     //The colours and sizes are taken from all retrieved products data.
     final static public boolean FIXED_COLOURS_AND_SIZES = false;
-
+    final static public int DEFAULT_STORE_ID = 2;
+    final static public int WAIT_TIME_IN_TRY_AGAIN_TO_CONNECT = 1000;
     final static public String DEFAULT_GRANT_TYPE = "password";
     final static public String DEFAULT_COUNTRY_CODE = "ES";
     final static public String DEFAULT_DISPLAY_LANGUAGE = "Español";

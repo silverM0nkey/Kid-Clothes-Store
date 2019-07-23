@@ -3,7 +3,6 @@ package com.happybaby.kcs.activities;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
@@ -27,6 +26,7 @@ import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.models.SizeModel;
 import com.happybaby.kcs.models.CustomerProfile;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseSize;
+import com.happybaby.kcs.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -54,6 +54,7 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
     private String selectedItem;
     private String shareUrl;
     private String storeId;
+    private String currency;
     private ArrayList<String> images;
     private ResponseSize currentSize;
     private ArrayList<ResponseSize> sizes;
@@ -85,9 +86,9 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         this.sizes = getIntent().getExtras().getParcelableArrayList(PARAM_SIZES);
         this.images = getIntent().getExtras().getStringArrayList(PARAM_IMAGES);
         this.productName = getIntent().getExtras().getString(PARAM_PRODUCT_NAME);
+        this.currency = getIntent().getExtras().getString(PARAM_CURRENCY);
         Integer originalPrice = getIntent().getExtras().getInt(PARAM_ORIGINAL_PRICE);
         String finalPriceType = getIntent().getExtras().getString(PARAM_FINAL_PRICE_TYPE);
-        String currency = getIntent().getExtras().getString(PARAM_CURRENCY);
         String sku = getIntent().getExtras().getString(PARAM_SKU);
         String composition = getIntent().getExtras().getString(PARAM_COMPOSITION);
         String color = getIntent().getExtras().getString(PARAM_COLOR);
@@ -125,13 +126,13 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
             addButton.setOnClickListener(this);
         }
 
-        Picasso.get().load(images.get(0)).placeholder(ContextCompat.getDrawable(this, R.drawable.image_not_found))
+        Picasso.with(this).load(images.get(0)).placeholder(ContextCompat.getDrawable(this, R.drawable.image_not_found))
                 .error(ContextCompat.getDrawable(this, R.drawable.image_not_found)).into(mainImage);
 
-        finalPriceText.setText(String.format("€ %s", Float.valueOf(finalPrice.floatValue()/100).toString()));
+        finalPriceText.setText(String.format("%s %s", Util.getSymbol(currency), Float.valueOf(finalPrice.floatValue()/100).toString()));
 
         if (originalPrice !=  null &&  !originalPrice.equals(finalPrice)) {
-            originalPriceText.setText(String.format("€ %s", Float.valueOf(originalPrice.floatValue() / 100).toString()));
+            originalPriceText.setText(String.format("%s %s", Util.getSymbol(currency), Float.valueOf(originalPrice.floatValue() / 100).toString()));
             originalPriceText.setPaintFlags(originalPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
@@ -139,7 +140,7 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         compositionText.setText(composition);
         colorText.setText(color);
 
-        Picasso.get().load(careUrlImage.replace("http:","https:")).into(careImage);
+        Picasso.with(this).load(careUrlImage.replace("http:","https:")).into(careImage);
     }
 
     @Override
@@ -170,7 +171,7 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
             if (currentSize == null) {
                 showSizePopup(true);
             } else {
-                addProductToShoppingCart(storeId, selectedItem, productName, currentSize, finalPrice, images.get(0));
+                addProductToShoppingCart(storeId, selectedItem, productName, currentSize, finalPrice, images.get(0), currency);
             }
         } else if (view.getId() == R.id.wish_image) {
             Toast.makeText(this, getResources().getString(R.string.wish_list_not_available), Toast.LENGTH_SHORT).show();
@@ -186,7 +187,7 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-    private void addProductToShoppingCart(String storeId, String modelId, String name, ResponseSize currentSize, Integer finalPrice, String urlImage) {
+    private void addProductToShoppingCart(String storeId, String modelId, String name, ResponseSize currentSize, Integer finalPrice, String urlImage, String currency) {
         ShoppingCartProduct shoppingCart = AppDatabase.getInstance(this).shoppingCartDao().findProductsByCustomerAndIds(CustomerProfile.getCustomerProfile().getEmail(), modelId, currentSize.getVariantId());
         if (shoppingCart != null) {
             shoppingCart.setQty(shoppingCart.getQty()+1);
@@ -195,20 +196,20 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         } else {
             AppDatabase.getInstance(this).shoppingCartDao().
                     insertProducts(new ShoppingCartProduct(CustomerProfile.getCustomerProfile().getEmail(), storeId,
-                            modelId, currentSize.getVariantId(), name, finalPrice, currentSize.getName(), urlImage, 1) );
+                            modelId, currentSize.getVariantId(), name, finalPrice, currentSize.getName(), urlImage, 1, currency) );
         }
         if (itemCart != null) {
             LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
             setBadgeCount(this, icon, getNumberOfProducts(CustomerProfile.getCustomerProfile().getEmail()).toString());
         }
-        Toast.makeText(this, "Producto añadido al carrito", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getResources().getString(R.string.product_added), Toast.LENGTH_SHORT).show();
     }
 
     private void showSizePopup(boolean fromAdd) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View sizeLayaout = inflater.inflate(R.layout.popup_size, null);
+        View sizeLayout = inflater.inflate(R.layout.popup_size, null);
 
-        ListView sizesList = sizeLayaout.findViewById(R.id.color_list);
+        ListView sizesList = sizeLayout.findViewById(R.id.color_list);
 
         sizesList.setOnItemClickListener(this);
 
@@ -219,14 +220,14 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         sizesList.setAdapter(sizesListAdapter);
 
         sizesPopupWindow = new PopupWindow(
-                sizeLayaout,
+                sizeLayout,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        if(Build.VERSION.SDK_INT>=21) {
-            sizesPopupWindow.setElevation(10.0f);
-        }
 
-        View root = this.findViewById(R.id.root_layaout);
+        sizesPopupWindow.setElevation(10.0f);
+
+
+        View root = this.findViewById(R.id.root_layout);
         sizesPopupWindow.showAtLocation(root, Gravity.CENTER,0,0);
         sizesPopupWindow.setOutsideTouchable(false);
     }
@@ -252,7 +253,7 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
             sizesButton.setText(currentSize.getName());
             sizesPopupWindow.dismiss();
             if (sizesListAdapter.isFromAdd()){
-                addProductToShoppingCart(storeId, selectedItem, productName, currentSize, finalPrice, images.get(0));
+                addProductToShoppingCart(storeId, selectedItem, productName, currentSize, finalPrice, images.get(0), currency);
             }
         }
     }

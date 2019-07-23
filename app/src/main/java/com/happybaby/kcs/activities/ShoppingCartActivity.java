@@ -7,24 +7,25 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happybaby.kcs.R;
+import com.happybaby.kcs.activities.interfaces.ShoppingCartListener;
 import com.happybaby.kcs.adapters.ShoppingCartRecyclerListAdapter;
 import com.happybaby.kcs.bd.room.AppDatabase;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.models.CustomerProfile;
+import com.happybaby.kcs.utils.Util;
 
 import java.util.List;
 
 
-public class ShoppingCartActivity extends BaseActivity {
+public class ShoppingCartActivity extends BaseActivity implements ShoppingCartListener {
 
     private ShoppingCartRecyclerListAdapter mShoppingCartRecyclerListAdapter;
-    private RecyclerView mShoppingCartRecyclerView;
+
     private TextView totalProducts;
     private TextView total;
     private Button confirmPurchase;
@@ -42,14 +43,11 @@ public class ShoppingCartActivity extends BaseActivity {
         setupToolbar();
         setTitle(getResources().getString(R.string.shopping_cart_tittle));
 
-        mShoppingCartRecyclerView = findViewById(R.id.products);
+        RecyclerView mShoppingCartRecyclerView = findViewById(R.id.products);
 
         confirmPurchase = findViewById(R.id.accept);
-        confirmPurchase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        confirmPurchase.setOnClickListener(View -> {
                 confirmPurchase();
-            }
         });
 
         List<ShoppingCartProduct> shoppingCartList = AppDatabase.getInstance(this).shoppingCartDao().findProductsByCustomer(CustomerProfile.getCustomerProfile().getEmail());
@@ -68,22 +66,22 @@ public class ShoppingCartActivity extends BaseActivity {
 
     private void updateTotalPrice() {
         float totalPrice = 0;
+        String currency = "";
         for (ShoppingCartProduct shoppingCart: mShoppingCartRecyclerListAdapter.getItems()) {
+            currency = shoppingCart.getCurrency();
             totalPrice = totalPrice + shoppingCart.getFinalPrice().floatValue() / 100 * shoppingCart.getQty();
         }
-        totalProducts.setText(String.format("€ %.2f", totalPrice));
-        total.setText(String.format("€ %.2f", totalPrice));
+        totalProducts.setText(String.format("%s %.2f", Util.getSymbol(currency), totalPrice));
+        total.setText(String.format("%s %.2f",  Util.getSymbol(currency), totalPrice));
     }
 
-
-
     private void confirmPurchase(){
-        if (CustomerProfile.getCustomerProfile().getEmail().equals(CustomerProfile.CUSTOMER_ANONIMOUS)){
+        if (CustomerProfile.getCustomerProfile().getEmail().equals(CustomerProfile.CUSTOMER_ANONYMOUS)){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {
             AppDatabase.getInstance(this).shoppingCartDao().deleteProductsByCustomer(CustomerProfile.getCustomerProfile().getEmail());
-            Toast.makeText(this, "Compra demo realizada!!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.purchase_finish), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -100,7 +98,7 @@ public class ShoppingCartActivity extends BaseActivity {
         }
     }
 
-    public void setQyt(String modelId, String variantId, int qty) {
+    public void changeQyt(String modelId, String variantId, int qty) {
         ShoppingCartProduct productToModify = mShoppingCartRecyclerListAdapter.getItems().stream().filter(p -> p.getModelId().equals(modelId) && p.getVariantId().equals(variantId)).findFirst().orElse(null);
         if (productToModify != null) {
             if (productToModify.getQty() < qty) {
@@ -119,5 +117,13 @@ public class ShoppingCartActivity extends BaseActivity {
             productToModify.setQty(qty);
             AppDatabase.getInstance(this).shoppingCartDao().insertProducts(shoppingCart);
         }
+    }
+
+    public void onRemoveProduct(String modelId, String variantId){
+        removeProduct(modelId, variantId);
+    }
+
+    public void onChangeQyt(String modelId, String variantId, int qty){
+        changeQyt(modelId, variantId, qty);
     }
 }

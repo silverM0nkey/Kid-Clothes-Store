@@ -3,6 +3,7 @@ package com.happybaby.kcs.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.happybaby.kcs.R;
 import com.happybaby.kcs.models.CustomerProfile;
@@ -41,25 +42,31 @@ public class InitialActivity extends BaseActivity {
                     String countryCode = locale.getCountry();
                     String displayLanguage = locale.getDisplayLanguage();
                     List<ResponseStore> stores = response.body();
-                    ResponseStore foundStore = stores.stream().filter(s -> s.getCountryCode().equals(countryCode) ).findAny().orElse(null);
+                    ResponseStore foundStore = stores.stream().filter(s -> s.getCountryCode().equals(countryCode)).findAny().orElse(null);
 
                     if (foundStore == null) {
                         foundStore = stores.stream().filter(s -> s.getCountryCode().equals(ConnectionsProfile.DEFAULT_COUNTRY_CODE)).findAny().orElse(null);
                     }
-
-                    ResponseStoreView storeView = foundStore.getStoreViews().stream().filter(sv -> sv.getName().equals(displayLanguage)).findAny().orElse(null);
-                    if (storeView == null) {
-                        storeView = foundStore.getStoreViews().stream().filter(sv -> sv.getName().equals(ConnectionsProfile.DEFAULT_DISPLAY_LANGUAGE)).findAny().orElse(null);
+                    ResponseStoreView storeView = null;
+                    if (foundStore != null){
+                        storeView = foundStore.getStoreViews().stream().filter(sv -> sv.getName().equals(displayLanguage)).findAny().orElse(null);
+                        if (storeView == null) {
+                            storeView = foundStore.getStoreViews().stream().filter(sv -> sv.getName().equals(ConnectionsProfile.DEFAULT_DISPLAY_LANGUAGE)).findAny().orElse(null);
+                        }
                     }
-
-                    int storeId = storeView.getStoreId();
+                    int storeId;
+                    if (storeView != null) {
+                        storeId = storeView.getStoreId();
+                    } else {
+                        storeId = 2;
+                    }
                     CustomerProfile.getCustomerProfile().setStoreId(storeId);
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.putExtra(GeneralInfoActivity.PARAM_STORE_ID, storeId);
                     startActivity(intent);
                     finish();
                 } else {
-                    System.out.print(response.errorBody());
+                    Toast.makeText(context, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });

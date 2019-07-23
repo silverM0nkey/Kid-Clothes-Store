@@ -22,7 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ConnectionErrorActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Retrofit retrofit;
     private RestClient restClient;
     ProgressBar progressBar;
 
@@ -34,7 +33,6 @@ public class ConnectionErrorActivity extends AppCompatActivity implements View.O
         Button tryAgainButton = findViewById(R.id.try_again_button);
         tryAgainButton.setOnClickListener(this);
 
-
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
 
@@ -42,7 +40,7 @@ public class ConnectionErrorActivity extends AppCompatActivity implements View.O
                 .setLenient()
                 .create();
 
-        retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ConnectionsProfile.MOCK_API)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
@@ -58,12 +56,10 @@ public class ConnectionErrorActivity extends AppCompatActivity implements View.O
             @Override
             public void onResponse(Call<ResponseGeneralInfo> call, Response<ResponseGeneralInfo> response) {
                 if(response.isSuccessful()) {
-                    ResponseGeneralInfo user = response.body();
                     finish();
                 } else {
-                    System.out.println(response.errorBody());
                     try {
-                        ConnectionErrorActivity.this.wait(1000);
+                        ConnectionErrorActivity.this.wait(ConnectionsProfile.WAIT_TIME_IN_TRY_AGAIN_TO_CONNECT);
                         progressBar.setVisibility(View.GONE);
                     } catch (Exception e){
                         progressBar.setVisibility(View.GONE);
@@ -74,7 +70,7 @@ public class ConnectionErrorActivity extends AppCompatActivity implements View.O
             @Override
             public void onFailure(Call<ResponseGeneralInfo> call, Throwable t) {
                 try {
-                    ConnectionErrorActivity.this.wait(1000);
+                    ConnectionErrorActivity.this.wait(ConnectionsProfile.WAIT_TIME_IN_TRY_AGAIN_TO_CONNECT);
                     progressBar.setVisibility(View.GONE);
                 } catch (Exception e){
                     progressBar.setVisibility(View.GONE);
@@ -84,12 +80,7 @@ public class ConnectionErrorActivity extends AppCompatActivity implements View.O
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void onBackPressed() {
-
+        //Do nothing
     }
 }

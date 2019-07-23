@@ -36,7 +36,10 @@ public class ShoppingCartProduct {
     @ColumnInfo(name = "qty")
     private Integer qty;
 
-    public ShoppingCartProduct(@NonNull String customer, String storeId, @NonNull String modelId, @NonNull String variantId, String name, Integer finalPrice, String size, String urlImage, Integer qty) {
+    @ColumnInfo(name = "currency")
+    private String currency;
+
+    public ShoppingCartProduct(@NonNull String customer, String storeId, @NonNull String modelId, @NonNull String variantId, String name, Integer finalPrice, String size, String urlImage, Integer qty, String currency) {
         this.customer = customer;
         this.storeId = storeId;
         this.modelId = modelId;
@@ -46,6 +49,7 @@ public class ShoppingCartProduct {
         this.urlImage = urlImage;
         this.size = size;
         this.qty = qty;
+        this.currency = currency;
     }
 
     @NonNull
@@ -122,4 +126,8 @@ public class ShoppingCartProduct {
     public void setQty(Integer qty) {
         this.qty = qty;
     }
+
+    public String getCurrency() { return currency; }
+
+    public void setCurrency(String currency) { this.currency = currency; }
 }

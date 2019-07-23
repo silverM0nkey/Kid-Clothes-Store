@@ -15,9 +15,6 @@ public class BaseFragment extends Fragment {
     protected Retrofit retrofit;
     protected RestClient restClient;
 
-    public static String SERVER_ERROR_MENSSAGE =  "Server returned an error";
-    public static String CONNECTION_ERROR_MENSSAGE =  "network failure :(";
-
     protected void setupRestClient(){
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -29,5 +26,4 @@ public class BaseFragment extends Fragment {
                 .build();
         restClient = retrofit.create(RestClient.class);
     }
-
 }

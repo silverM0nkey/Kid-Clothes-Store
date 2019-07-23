@@ -18,7 +18,7 @@ import com.happybaby.kcs.models.fixed.SortOptionItemModel;
 
 public class SortOptionsListAdapter extends BaseAdapter {
 
-    protected Activity activity;
+    final protected Activity activity;
     protected List<SortOptionItemModel> items;
 
     public SortOptionsListAdapter(Activity activity, List<SortOptionItemModel> items) {
@@ -36,9 +36,7 @@ public class SortOptionsListAdapter extends BaseAdapter {
     }
 
     public void addAll(List<SortOptionItemModel> list) {
-        for (int i = 0; i < list.size(); i++) {
-            items.add(list.get(i));
-        }
+        items.addAll(list);
     }
 
     public void setItems(List<SortOptionItemModel> list) {
@@ -63,17 +61,16 @@ public class SortOptionsListAdapter extends BaseAdapter {
         View v = convertView;
 
         if (convertView == null) {
-            LayoutInflater inf = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inf.inflate(R.layout.item_sort_options_list, null);
+            v = LayoutInflater.from(activity).inflate(R.layout.item_sort_options_list, parent, false);
         }
 
-        SortOptionItemModel dir = items.get(position);
+        SortOptionItemModel sortOption = items.get(position);
 
         TextView optionName = v.findViewById(R.id.itemName);
-        optionName.setText(dir.getNameOption());
+        optionName.setText(sortOption.getNameOption());
 
         ImageView check = v.findViewById(R.id.checkIcon);
-        if (dir.getCheck())
+        if (sortOption.getCheck())
             check.setVisibility(View.VISIBLE);
         else
             check.setVisibility(View.GONE);

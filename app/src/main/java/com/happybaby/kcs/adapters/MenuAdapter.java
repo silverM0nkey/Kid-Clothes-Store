@@ -18,7 +18,7 @@ public class MenuAdapter extends ArrayAdapter<MenuItemModel> {
 
     Context mContext;
     int layoutResourceId;
-    MenuItemModel data[] = null;
+    MenuItemModel[] data;
 
     public MenuAdapter(Context mContext, int layoutResourceId, MenuItemModel[] data) {
 

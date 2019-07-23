@@ -6,14 +6,22 @@
         <item name="colorPrimaryDark">@color/main_800</item>
         <item name="colorAccent">@color/main_A400</item>
         <item name="android:textColor">@color/grey</item>
+        <item name="android:textSize">@dimen/text_size_m</item>
     </style>
 
     <style name="ListStyle">
         <item name="android:background">@color/white</item>
     </style>
 
+    <style name="MainLayout">
+        <item name="android:background">@color/white</item>
+        <item name="android:layout_marginLeft">@dimen/main_layout_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/main_layout_margin_right</item>
+        <item name="android:layout_marginTop">@dimen/main_layout_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/main_layout_margin_bottom</item>
+    </style>
+
     <style name="FormTextEditStyle">
-        <item name="android:textSize">12dp</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
@@ -22,9 +30,21 @@
 
     <style name="PersonalInfTextEditStyle">
         <item name="android:paddingLeft">10dp</item>
-        <item name="android:textSize">12dp</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">@drawable/button_border</item>
+    </style>
+
+    <style name="TileStyle">
+        <item name="android:layout_marginBottom">@dimen/title_margin_bottom</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_l</item>
+    </style>
+
+    <style name="WhiteButtonStyle">
+        <item name="android:textColor">@color/black_absolute</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:background">@drawable/button_border</item>
     </style>
 

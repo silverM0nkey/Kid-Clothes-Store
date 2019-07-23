@@ -14,7 +14,6 @@ import com.happybaby.kcs.models.FilterListModel;
 
 import java.util.List;
 
-
 public class ColorsListAdapter extends BaseAdapter {
 
     protected Activity activity;
@@ -35,9 +34,7 @@ public class ColorsListAdapter extends BaseAdapter {
     }
 
     public void addAll(List<FilterListModel> list) {
-        for (int i = 0; i < list.size(); i++) {
-            items.add(list.get(i));
-        }
+        items.addAll(list);
     }
 
     public void setItems(List<FilterListModel> list) {
@@ -66,13 +63,13 @@ public class ColorsListAdapter extends BaseAdapter {
             v = inf.inflate(R.layout.item_selectable_list, null);
         }
 
-        FilterListModel dir = items.get(position);
+        FilterListModel filter = items.get(position);
 
         TextView sizeName = v.findViewById(R.id.name);
-        sizeName.setText(dir.getName());
+        sizeName.setText(filter.getName());
 
         ImageView check = v.findViewById(R.id.checkIcon);
-        if (dir.getCheck())
+        if (filter.getCheck())
             check.setVisibility(View.VISIBLE);
         else
             check.setVisibility(View.GONE);

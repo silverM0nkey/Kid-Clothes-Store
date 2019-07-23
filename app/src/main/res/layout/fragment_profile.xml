@@ -10,17 +10,15 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp">
+        style="@style/MainLayout">
 
         <TextView
             android:id="@+id/profile_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
-            android:textSize="14dp"
+            android:textStyle="bold"
             android:text="@string/profile_title"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>

@@ -1,7 +1,6 @@
 package com.happybaby.kcs.models;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class FilterQueryModel {
 
@@ -16,7 +15,7 @@ public class FilterQueryModel {
     }
 
     public FilterQueryModel(){
-        this.colourFilter = new ArrayList<String>();
+        this.colourFilter = new ArrayList<>();
         this.maxPriceFilter = null;
         this.minPriceFilter = null;
     }

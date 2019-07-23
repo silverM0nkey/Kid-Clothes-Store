@@ -1,8 +1,10 @@
 package com.happybaby.kcs.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.text.HtmlCompat;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.happybaby.kcs.R;
 import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
@@ -15,7 +17,7 @@ public class GeneralInfoActivity extends BaseActivity {
     private TextView contentText;
     public static String PARAM_TYPE = "type";
     public static String PARAM_STORE_ID = "storeId";
-    public static enum Types {TYPE_FAQ, TYPE_SHOPPING_GUIDE, TYPE_SHIPPING_COSTS, TYPE_CONTACT};
+    public enum Types {TYPE_FAQ, TYPE_SHOPPING_GUIDE, TYPE_SHIPPING_COSTS, TYPE_CONTACT}
     public static String shippingCostsContent = "<html><header><title>Shipping Costs</title></header><body><h1 ALIGN=\"center\" STYLE=\"font:36pt/40pt courier;\">Hello world!</h1></body></html>";
 
     @Override
@@ -27,23 +29,23 @@ public class GeneralInfoActivity extends BaseActivity {
         setupRestClient();
 
         int selectedItem = getIntent().getExtras().getInt(PARAM_TYPE);
-        String storeId = new Integer(getIntent().getExtras().getInt(PARAM_STORE_ID)).toString();
+        String storeId = Integer.valueOf(getIntent().getExtras().getInt(PARAM_STORE_ID)).toString();
         setTitle(getResources().getStringArray(R.array.navigation_menu_items_array)[selectedItem]);
 
-        // Views
-        contentText = (TextView) findViewById(R.id.content_text);
+        contentText = findViewById(R.id.content_text);
         Call<ResponseGeneralInfo> call = null;
         if (selectedItem == Types.TYPE_FAQ.ordinal()){
             call = restClient.getFaq(storeId);        } else  if  (selectedItem == Types.TYPE_SHOPPING_GUIDE.ordinal()) {
             call = restClient.getShoppingGuide(storeId);
         } else  if  (selectedItem == Types.TYPE_SHIPPING_COSTS.ordinal()) {
-            //Endpoint returs malformed json
+            //Endpoint returns malformed json
             //call = restClient.getShippingCosts(storeId);
         }  else  if  (selectedItem == Types.TYPE_CONTACT.ordinal()) {
             call = restClient.getContact(storeId);
         }
 
         if (call != null) {
+            Context context = this;
             call.enqueue(new CallbackWithRetry<ResponseGeneralInfo>(this) {
 
                 @Override
@@ -52,20 +54,13 @@ public class GeneralInfoActivity extends BaseActivity {
                         ResponseGeneralInfo responseGeneralInfo = response.body();
                         contentText.setText(HtmlCompat.fromHtml(responseGeneralInfo.getContent(), HtmlCompat.FROM_HTML_MODE_LEGACY));
                     } else {
-                        System.out.print(response.errorBody());
+                        Toast.makeText(context, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         } else {
             contentText.setText(HtmlCompat.fromHtml(shippingCostsContent, HtmlCompat.FROM_HTML_MODE_LEGACY));
         }
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
     }
 
     @Override

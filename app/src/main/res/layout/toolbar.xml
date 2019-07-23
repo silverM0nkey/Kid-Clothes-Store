@@ -7,5 +7,4 @@
     android:background="@color/main_500"
     local:contentInsetStart="0dp"
     local:layout_scrollFlags="scroll|enterAlways"
-    local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    local:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    local:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>

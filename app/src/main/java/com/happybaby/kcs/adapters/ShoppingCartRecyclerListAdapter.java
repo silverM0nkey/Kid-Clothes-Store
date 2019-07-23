@@ -11,7 +11,9 @@ import android.widget.TextView;
 
 import com.happybaby.kcs.R;
 import com.happybaby.kcs.activities.ShoppingCartActivity;
+import com.happybaby.kcs.activities.interfaces.ShoppingCartListener;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
+import com.happybaby.kcs.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,8 +23,7 @@ public class ShoppingCartRecyclerListAdapter extends
 
     protected Context context;
     protected List<ShoppingCartProduct> products;
-    protected ShoppingCartActivity shoppingCartActivity;
-
+    protected ShoppingCartListener shoppingCartActivity;
 
     public ShoppingCartRecyclerListAdapter(Context context, ShoppingCartActivity shoppingCartActivity, List<ShoppingCartProduct> shoppingCart) {
         this.context = context;
@@ -56,37 +57,28 @@ public class ShoppingCartRecyclerListAdapter extends
 
     @Override
     public void onBindViewHolder(ShoppingCartRecyclerListAdapter.ViewHolder viewHolder, int position) {
-        ShoppingCartProduct dir = products.get(position);
-        Picasso.get().load(dir.getUrlImage()).fit()
+        ShoppingCartProduct product = products.get(position);
+        Picasso.with(context).load(product.getUrlImage()).fit()
                 .placeholder(ContextCompat.getDrawable(context, R.drawable.image_not_found))
                 .error(ContextCompat.getDrawable(context, R.drawable.image_not_found))
                 .into(viewHolder.imageProduct);
-        viewHolder.nameProduct.setText(dir.getName());
-        viewHolder.finalPrice.setText(String.format("€ %s", Float.valueOf(dir.getFinalPrice().floatValue()/100).toString()));
-        viewHolder.qty.setText(dir.getQty().toString());
-        viewHolder.sizeProduct.setText(String.format("%s %s", context.getResources().getString(R.string.size), dir.getSize()));
+        viewHolder.nameProduct.setText(product.getName());
+        viewHolder.finalPrice.setText(String.format("%s %s", Util.getSymbol(product.getCurrency()), Float.valueOf(product.getFinalPrice().floatValue()/100).toString()));
+        viewHolder.qty.setText(product.getQty().toString());
+        viewHolder.sizeProduct.setText(String.format("%s %s", context.getResources().getString(R.string.size), product.getSize()));
 
-        viewHolder.removeItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shoppingCartActivity.removeProduct(dir.getModelId(), dir.getVariantId());
-            }
+        viewHolder.removeItem.setOnClickListener(View -> {
+                shoppingCartActivity.onRemoveProduct(product.getModelId(), product.getVariantId());
         });
 
-        viewHolder.moreQty.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shoppingCartActivity.setQyt(dir.getModelId(), dir.getVariantId(), dir.getQty() + 1);
-            }
+        viewHolder.moreQty.setOnClickListener(View -> {
+                shoppingCartActivity.onChangeQyt(product.getModelId(), product.getVariantId(), product.getQty() + 1);
         });
 
-        viewHolder.lessQty.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (dir.getQty() > 1) {
-                    shoppingCartActivity.setQyt(dir.getModelId(), dir.getVariantId(), dir.getQty() - 1);
+        viewHolder.lessQty.setOnClickListener(View -> {
+                if (product.getQty() > 1) {
+                    shoppingCartActivity.onChangeQyt(product.getModelId(), product.getVariantId(), product.getQty() - 1);
                 }
-            }
         });
     }
 

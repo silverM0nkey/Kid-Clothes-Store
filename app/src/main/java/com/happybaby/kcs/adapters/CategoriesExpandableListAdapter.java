@@ -12,7 +12,7 @@ import java.util.List;
 import com.happybaby.kcs.R;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseCategory;
 
-@SuppressWarnings("unchecked")
+
 public class CategoriesExpandableListAdapter extends BaseExpandableListAdapter {
 
     protected List<ResponseCategory> categories;
@@ -41,11 +41,10 @@ public class CategoriesExpandableListAdapter extends BaseExpandableListAdapter {
         View v = convertView;
 
         if (v == null) {
-            LayoutInflater inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inf.inflate(R.layout.item_subcategory_list, null);
+            v = LayoutInflater.from(context).inflate(R.layout.item_selectable_list, parent, false);
         }
 
-        TextView categoryName = (TextView)  v.findViewById(R.id.subcategory_name);
+        TextView categoryName = v.findViewById(R.id.subcategory_name);
         categoryName.setText(category.getName());
 
         return v;
@@ -87,13 +86,12 @@ public class CategoriesExpandableListAdapter extends BaseExpandableListAdapter {
 
         View v = convertView;
         if (v == null) {
-            LayoutInflater inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inf.inflate(R.layout.item_category_list, null);
+            v = LayoutInflater.from(context).inflate(R.layout.item_category_list, parent, false);
         }
 
         final ResponseCategory category = categories.get(categoryPosition);
 
-        TextView categoryName = (TextView) v.findViewById(R.id.category_name);
+        TextView categoryName = v.findViewById(R.id.category_name);
         categoryName.setText(category.getName());
         return v;
     }

@@ -1,6 +1,5 @@
 package com.happybaby.kcs.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.LayerDrawable;
@@ -10,7 +9,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,7 +46,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     final public int STORE_POSITION  = 2;
 
     final public static String PARAM_STORE_ID = "storeId";
-    private ArrayList <Fragment> mainFragments;
+
     private NonSwipeableViewPager viewPager;
     private DrawerLayout mDrawerLayout;
     private ExpandableListView expandableListView;
@@ -71,16 +69,14 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView mMenuList = (ListView) findViewById(R.id.menu_list);
-        TextView menuHome = (TextView) findViewById(R.id.home_text);
+        ListView mMenuList = findViewById(R.id.menu_list);
+        TextView menuHome = findViewById(R.id.home_text);
 
         menuHome.setOnClickListener(this);
 
         expandableListView = findViewById(R.id.data_categories);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-
+        setupToolbar();
         setupRestClient();
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -94,9 +90,9 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         String[] drawerItems = getResources().getStringArray(R.array.navigation_menu_items_array);
 
         menu[0] = new MenuItemModel(R.drawable.ic_faq_grey_24dp, drawerItems[0]);
-        menu[1] = new MenuItemModel(R.drawable.ic_faq_grey_24dp, drawerItems[1]);
-        menu[2] = new MenuItemModel(R.drawable.ic_faq_grey_24dp, drawerItems[2]);
-        menu[3] = new MenuItemModel(R.drawable.ic_faq_grey_24dp, drawerItems[3]);
+        menu[1] = new MenuItemModel(R.drawable.ic_shopping_basket_grey_24dp, drawerItems[1]);
+        menu[2] = new MenuItemModel(R.drawable.ic_shipping_costs_grey_24dp, drawerItems[2]);
+        menu[3] = new MenuItemModel(R.drawable.ic_store_grey_24dp, drawerItems[3]);
 
         MenuAdapter menuAdapter = new MenuAdapter(this, R.layout.item_list_view_row, menu);
         mMenuList.setAdapter(menuAdapter);
@@ -104,7 +100,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
         Context context = this;
         this.storeId = getIntent().getExtras().getInt(PARAM_STORE_ID);
-        Call<List<ResponseCategory>> call = restClient.getCategories(new Integer(this.storeId).toString());
+        Call<List<ResponseCategory>> call = restClient.getCategories(Integer.valueOf(this.storeId).toString());
         call.enqueue(new CallbackWithRetry<List<ResponseCategory>>(this) {
 
             @Override
@@ -114,21 +110,18 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                     final CategoriesExpandableListAdapter categoriesExpandableListAdapter = new CategoriesExpandableListAdapter(categories, context);
                     expandableListView.setAdapter(categoriesExpandableListAdapter);
 
-                    expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-                        @Override
-                        public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                    expandableListView.setOnChildClickListener((ExpandableListView parent, View v, int groupPosition, int childPosition, long id) -> {
                             CategoriesExpandableListAdapter adapter = (CategoriesExpandableListAdapter)expandableListView.getExpandableListAdapter();
                             String categoryId = adapter.getGroup(groupPosition).getChildren().get(childPosition).getCategoryId();
                             String categoryName = adapter.getGroup(groupPosition).getChildren().get(childPosition).getName();
                             mDrawerLayout.closeDrawer(Gravity.LEFT, true);
-                            catalogFragment.setCategory(categoryId, categoryName);
+                            catalogFragment.onChangeCategory(categoryId, categoryName);
                             navView.setSelectedItemId(R.id.navigation_catalog);
                             return true;
-                        }
                     });
                 } else {
                     System.out.print(response.errorBody());
-                    Toast.makeText(context, SERVER_ERROR_MENSSAGE, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -136,23 +129,20 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         viewPager =  findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(2);
 
-        catalogFragment = CatalogFragment.newInstance(new Integer(storeId).toString());
+        catalogFragment = CatalogFragment.newInstance(Integer.valueOf(storeId).toString());
         profileFragment = new ProfileFragment();
 
-        mainFragments = new ArrayList();
+        ArrayList <Fragment> mainFragments = new ArrayList<>();
         mainFragments.add(profileFragment);
         mainFragments.add(catalogFragment);
         mainFragments.add(new StoresFragment());
 
-
-        SimpleFragmentPagerAdapter simpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(getSupportFragmentManager(), mainFragments);
+        SimpleFragmentPagerAdapter simpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(getSupportFragmentManager(), mainFragments, this);
         viewPager.setAdapter(simpleFragmentPagerAdapter);
 
         navView = findViewById(R.id.nav_view);
 
-        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        navView.setOnNavigationItemSelectedListener((@NonNull MenuItem item) -> {
                 switch (item.getItemId()) {
                     case R.id.navigation_profile:
                         viewPager.setCurrentItem(PROFILE_POSITION);
@@ -167,7 +157,6 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                         break;
                 }
                 return true;
-            }
         });
 
         navView.setSelectedItemId(R.id.navigation_catalog);
@@ -209,7 +198,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
     @Override
     public void onBackPressed() {
-
+        //Do nothing
     }
 
     public void shoppingCartInActionbarUpdate() {

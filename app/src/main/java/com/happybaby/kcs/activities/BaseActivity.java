@@ -17,14 +17,11 @@ import com.happybaby.kcs.restapi.gooco.client.RestClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity  {
 
     protected Toolbar toolbar;
-    protected Retrofit retrofit;
+    private Retrofit retrofit;
     protected RestClient restClient;
-    public static String SERVER_ERROR_MENSSAGE =  "Server returned an error";
-    public static String CONNECTION_ERROR_MENSSAGE =  "network failure :(";
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void setupToolbar(){
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -57,10 +54,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected static void setBadgeCount(Context context, LayerDrawable icon, String count) {
 
         BadgeDrawable badge;
-
-        // Reuse drawable if possible
         Drawable reuse = icon.findDrawableByLayerId(R.id.ic_badge);
-        if (reuse != null && reuse instanceof BadgeDrawable) {
+        if (reuse instanceof BadgeDrawable) {
             badge = (BadgeDrawable) reuse;
         } else {
             badge = new BadgeDrawable(context);

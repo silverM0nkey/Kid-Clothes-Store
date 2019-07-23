@@ -18,12 +18,12 @@ import java.util.List;
 
 public class SizesListAdapter extends BaseAdapter {
 
-    protected Activity activity;
+    protected Context context;
     protected List<SizeModel> items;
     protected boolean fromAdd;
 
-    public SizesListAdapter(Activity activity, List<SizeModel> items, boolean fromAdd) {
-        this.activity = activity;
+    public SizesListAdapter(Context context, List<SizeModel> items, boolean fromAdd) {
+        this.context = context;
         this.items = items;
         this.fromAdd = fromAdd;
     }
@@ -37,18 +37,8 @@ public class SizesListAdapter extends BaseAdapter {
         return items.size();
     }
 
-    public void clear() {
-        items.clear();
-    }
-
     public void addAll(List<SizeModel> list) {
-        for (int i = 0; i < list.size(); i++) {
-            items.add(list.get(i));
-        }
-    }
-
-    public void setItems(List<SizeModel> list) {
-        items = list;
+        items.addAll(list);
     }
 
     public List<SizeModel> getItems(){ return items; }
@@ -69,23 +59,22 @@ public class SizesListAdapter extends BaseAdapter {
         View v = convertView;
 
         if (convertView == null) {
-            LayoutInflater inf = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inf.inflate(R.layout.item_selectable_list, null);
+            v = LayoutInflater.from(context).inflate(R.layout.item_selectable_list, parent, false);
         }
 
-        SizeModel dir = items.get(position);
+        SizeModel sizeModel = items.get(position);
 
         TextView sizeName = v.findViewById(R.id.name);
-        sizeName.setText(dir.getName());
+        sizeName.setText(sizeModel.getName());
 
-        if (dir.getStockQty() > 0 ){
+        if (sizeModel.getStockQty() > 0 ){
             sizeName.setPaintFlags( sizeName.getPaintFlags() & Paint.LINEAR_TEXT_FLAG);
         } else {
             sizeName.setPaintFlags(sizeName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
         ImageView check = v.findViewById(R.id.checkIcon);
-        if (dir.getCheck())
+        if (sizeModel.getCheck())
             check.setVisibility(View.VISIBLE);
         else
             check.setVisibility(View.GONE);

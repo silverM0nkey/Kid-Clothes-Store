@@ -14,79 +14,63 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:minWidth="30dp"
-        android:minHeight="30dp">
+        style="@style/MainLayout">
 
         <TextView
             android:id="@+id/title_sizes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center"
+            style="@style/TileStyle"
             android:text="COLORS"
             app:layout_constraintBottom_toTopOf="@+id/color_list"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ListView
             android:id="@+id/color_list"
             style="@style/ListStyle"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toTopOf="@+id/separator"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_sizes" />
+            app:layout_constraintTop_toBottomOf="@+id/title_sizes"/>
 
         <View
             android:id="@+id/separator"
             android:layout_width="wrap_content"
             android:layout_height="1px"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
             android:background="@color/grey"
             app:layout_constraintBottom_toTopOf="@+id/title_price"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/color_list" />
+            app:layout_constraintTop_toBottomOf="@+id/color_list"/>
 
         <TextView
             android:id="@+id/title_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center"
+            style="@style/TileStyle"
             android:text="PRECIO"
-            app:layout_constraintBottom_toTopOf="@+id/min_price_label"
+            android:layout_marginTop="@dimen/big_margin_top"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/separator" />
+            app:layout_constraintTop_toBottomOf="@+id/separator"/>
 
 
         <TextView
             android:id="@+id/min_price_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
             android:layout_marginRight="5dp"
             android:text="Precio Mínimo:"
             app:layout_constraintBottom_toTopOf="@+id/apply_filters"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/min_price"
-            app:layout_constraintTop_toBottomOf="@+id/title_price" />
-
+            app:layout_constraintTop_toBottomOf="@+id/title_price"/>
 
         <EditText
             android:id="@+id/min_price"
@@ -98,8 +82,7 @@
             app:layout_constraintBottom_toTopOf="@+id/apply_filters"
             app:layout_constraintLeft_toRightOf="@+id/min_price_label"
             app:layout_constraintRight_toLeftOf="@+id/max_price_label"
-            app:layout_constraintTop_toBottomOf="@+id/title_price"
-            app:layout_constraintVertical_bias="0.063" />
+            app:layout_constraintTop_toBottomOf="@+id/title_price"/>
 
         <TextView
             android:id="@+id/max_price_label"
@@ -110,8 +93,7 @@
             app:layout_constraintBottom_toTopOf="@+id/apply_filters"
             app:layout_constraintLeft_toRightOf="@+id/min_price"
             app:layout_constraintRight_toLeftOf="@+id/max_price"
-            app:layout_constraintTop_toBottomOf="@+id/title_price"
-            app:layout_constraintVertical_bias="0.12" />
+            app:layout_constraintTop_toBottomOf="@+id/title_price" />
 
         <EditText
             android:id="@+id/max_price"
@@ -123,37 +105,30 @@
             app:layout_constraintBottom_toTopOf="@+id/apply_filters"
             app:layout_constraintLeft_toRightOf="@+id/max_price_label"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_price"
-            app:layout_constraintVertical_bias="0.063" />
+            app:layout_constraintTop_toBottomOf="@+id/title_price"/>
 
         <Button
             android:id="@+id/apply_filters"
+            style="@style/WhiteButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="164dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/button_border"
+            android:layout_marginTop="100dp"
             android:text="Aplicar filtros"
-            android:textColor="@color/black_absolute"
-            android:textStyle="normal"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintBottom_toTopOf="@+id/remove_filters"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/max_price"
-            app:layout_constraintTop_toTopOf="@+id/min_price_label" />
+            app:layout_constraintTop_toBottomOf="@id/title_price" />
 
         <Button
             android:id="@+id/remove_filters"
+            style="@style/WhiteButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/button_border"
+            android:layout_marginTop="@dimen/general_margin_top"
             android:text="Eliminar filtros"
-            android:textColor="@color/black_absolute"
-            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/apply_filters" />

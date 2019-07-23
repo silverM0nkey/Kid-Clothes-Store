@@ -5,12 +5,19 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
+    <string name="server_error">Server returned an error</string>
+    <string name="network_error">network failure</string>
+
     <string-array name="navigation_menu_items_array">
         <item>FAQ</item>
-        <item>Shopping Guide</item>
-        <item>Shipping Costs</item>
-        <item>Contact</item>
+        <item>Guia de compra</item>
+        <item>Costes de envío</item>
+        <item>Contactos</item>
     </string-array>
+
+    <string name="tab_my_profil">MY PERFIL</string>
+    <string name="tab_catalog">CATALOGO</string>
+    <string name="tab_stores">TIENDAS</string>
 
     <string-array name="sort_options_array">
         <item>PRECIO: DE MÁS CARO A MÁS BARATO</item>
@@ -19,12 +26,12 @@
         <item>NOMBRE Z-A</item>
     </string-array>
 
-
     <string name="filter">FILTRAR</string>
     <string name="sort">ORDENAR</string>
     <string name="size">TALLA</string>
+    <string name="sizes">TALLAS</string>
     <string name="size_guide">GUÍA DE TALLAS</string>
-
+    <string name="product_added">Producto añadido al carrito</string>
 
     <string name="shopping_cart_tittle">Mi carrito</string>
     <string name="total_productos">TOTAL PRODUCTOS</string>
@@ -32,13 +39,13 @@
     <string name="included_taxes">IMPUESTOS INCLUIDOS</string>
     <string name="keep_buying">CONTINUAR COMPRA</string>
     <string name="empty_cart">El carrito esta vacio</string>
-
+    <string name="purchase_finish">"Compra demo realizada!!!!</string>
 
     <string name="login_title">Identifícate / Regístrate</string>
     <string name="login_subtitle">IDENTIFÍCATE</string>
     <string name="login_email">Email*</string>
     <string name="login_password">Contraseña*</string>
-    <string name="login_password_forgoten">¿Olidaste la contraseña?</string>
+    <string name="login_password_forgotten">¿Olidaste la contraseña?</string>
     <string name="login_button_label">ACCEDER</string>
 
     <string name="login_join_subtitle">REGÍSTRATE</string>
@@ -66,11 +73,11 @@
     <string name="profile_login_label">INICIAR SESIÓN</string>
     <string name="profile_logout_label">DESCONECTAR</string>
 
-
     <string name="modification_not_available">La modificación de los datos no esta disponible</string>
     <string name="wish_list_not_available">Lista de deseos desactivada</string>
     <string name="sizes_guide_not_available">Guía de tallas no disponible</string>
 
+    <string name="tittle_filters">Filtros</string>
     <string-array name="color_array">
         <item>Azul</item>
         <item>Verde</item>
@@ -89,5 +96,9 @@
         <item>4-5</item>
         <item>5-6</item>
     </string-array>
+
+    <string name="stores_fragment">Proximamente tu directio de tiendas</string>
+
+    <string name="try_again_connection">Try again</string>
 
 </resources>

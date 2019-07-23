@@ -2,7 +2,7 @@ package com.happybaby.kcs.models;
 
 public class CustomerProfile {
 
-    static public String CUSTOMER_ANONIMOUS = "anonimous";
+    static public String CUSTOMER_ANONYMOUS = "anonymous";
     private String email;
     private String firstName;
     private String lastName;
@@ -15,8 +15,8 @@ public class CustomerProfile {
     private static CustomerProfile customerProfile;
 
     private CustomerProfile(){
-        email = CUSTOMER_ANONIMOUS;
-        identification = CUSTOMER_ANONIMOUS;
+        email = CUSTOMER_ANONYMOUS;
+        identification = CUSTOMER_ANONYMOUS;
     }
 
     static public CustomerProfile getCustomerProfile(){
@@ -39,8 +39,8 @@ public class CustomerProfile {
     }
 
     public void logout(){
-        email = CUSTOMER_ANONIMOUS;
-        identification = CUSTOMER_ANONIMOUS;
+        email = CUSTOMER_ANONYMOUS;
+        identification = CUSTOMER_ANONYMOUS;
         this.firstName = null;
         this.lastName = null;
         this.phone = null;

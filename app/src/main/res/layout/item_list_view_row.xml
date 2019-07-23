@@ -17,7 +17,6 @@
         android:layout_height="match_parent"
         android:layout_toRightOf="@+id/itemIcon"
         android:paddingLeft="10dp"
-        android:layout_alignTop="@+id/itemIcon"
-        android:textSize="14sp"/>
+        android:layout_alignTop="@+id/itemIcon"/>
 
 </RelativeLayout>

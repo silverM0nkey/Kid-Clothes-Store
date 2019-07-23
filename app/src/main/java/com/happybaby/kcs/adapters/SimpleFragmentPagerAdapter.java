@@ -5,24 +5,25 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.happybaby.kcs.R;
+
 import java.util.ArrayList;
 
 public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private ArrayList<Fragment> mFragments;
-    public static final String TAB_MY_PROFILE = "MY PROFILE";
-    public static final String TAB_CATALOG = "CATALOG";
-    public static final String TAB_STORES = "STORES";
+    private Context mContext;
 
-    public SimpleFragmentPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments) {
+    public SimpleFragmentPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments, Context context) {
         super(fm);
         mFragments = fragments;
+        mContext = context;
     }
 
     @Override
     public Fragment getItem(int position) {
         if (position>=0 && position<getCount()){
-            return (Fragment)mFragments.get(position);
+            return mFragments.get(position);
         }
         return null;
     }
@@ -36,13 +37,12 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position){
             case 0:
-                return TAB_MY_PROFILE;
+                return mContext.getResources().getString(R.string.tab_my_profil);
             case 1:
-                return TAB_CATALOG;
+                return mContext.getResources().getString(R.string.tab_catalog);
             case 2:
-                return TAB_STORES;
+                return mContext.getResources().getString(R.string.tab_stores);
         }
         return "";
     }
-
 }

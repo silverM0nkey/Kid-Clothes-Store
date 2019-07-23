@@ -12,7 +12,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:gravity="center"
-        android:text="TALLAS"/>
+        android:text="@string/sizes"/>
 
     <View
         android:id="@+id/separator"
