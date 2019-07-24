@@ -3,6 +3,9 @@ package com.happybaby.kcs.restapi.gooco.client;
 
 import com.happybaby.kcs.restapi.gooco.requests.RequestLogin;
 import com.happybaby.kcs.restapi.gooco.requests.RequestPostCustomer;
+import com.happybaby.kcs.restapi.gooco.requests.ResquestAddItemToCart;
+import com.happybaby.kcs.restapi.gooco.requests.ResquestUpdateItemFromCart;
+import com.happybaby.kcs.restapi.gooco.responses.ResponseCart;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseCategory;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseCustomer;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseGeneralInfo;
@@ -17,9 +20,11 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 
@@ -32,6 +37,7 @@ public interface RestClient {
     String PARAM_DIR = "dir";
     String PARAM_PAGE = "page";
     String PARAM_LIMIT = "limit";
+    String PARAM_NEW_ITEM = "New item";
 
     @GET("stores/{storeId}/faq")
     Call<ResponseGeneralInfo> getFaq(@Path("storeId") String storeId);
@@ -68,5 +74,15 @@ public interface RestClient {
 
     @GET("/stores/{storeId}/customer")
     Call<ResponseCustomer> getCustomer(@Path("storeId") String storeId, @Header("Authorization") String auth);
+
+    @POST("/stores/{storeId}/cart/item")
+    ResponseCart addItemToCart(@Path("storeId") String storeId, @Header("Authorization") String auth, @Body ResquestAddItemToCart resquestAddItemToCart, @QueryMap Map<String, String> params);
+
+    @DELETE("/stores/{storeId}/cart/item/{item}")
+    ResponseCart deleteItemFromCart(@Path("storeId") String storeId, @Path("storeId") String item);
+
+    @PUT("/stores/{storeId}/cart/item/{item}")
+    ResponseCart updateItemToCart(@Path("storeId") String storeId, @Path("storeId") String item, @Header("Authorization") String auth, @Body ResquestUpdateItemFromCart resquestUpdateItemFromCart);
+
 
 }

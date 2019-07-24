@@ -25,6 +25,8 @@ import com.happybaby.kcs.bd.room.AppDatabase;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.models.SizeModel;
 import com.happybaby.kcs.models.CustomerProfile;
+import com.happybaby.kcs.restapi.gooco.requests.ResquestAddItemToCart;
+import com.happybaby.kcs.restapi.gooco.responses.ResponseCart;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseSize;
 import com.happybaby.kcs.utils.Util;
 import com.squareup.picasso.Picasso;
