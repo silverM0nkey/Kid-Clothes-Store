@@ -72,6 +72,8 @@ public class CatalogFragment extends BaseFragment implements ListView.OnItemClic
 
     private ArrayList<String> availableColors;
 
+    private String categoryName;
+
     public CatalogFragment() {
 
     }
@@ -153,6 +155,7 @@ public class CatalogFragment extends BaseFragment implements ListView.OnItemClic
 
     public void changeCategory(String categoryId, String categoryName) {
         getActivity().setTitle(categoryName);
+        this.categoryName = categoryName;
         mProgressBar.setVisibility(View.VISIBLE);
         sortByListOptions.setVisibility(View.GONE);
         HashMap<String, String> params = new HashMap<>();
@@ -180,12 +183,24 @@ public class CatalogFragment extends BaseFragment implements ListView.OnItemClic
                     availableColors = getAvailableColours();
                 } else {
                     Toast.makeText(getActivity(), getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.GONE);
                 }
             }
+            public void onFinalFailure() {
+                super.onFinalFailure();
+                mProgressBar.setVisibility(View.GONE);
+            }
+
+
         });
     }
 
+    public String getCategoryName(){
+        return this.categoryName;
+    }
+
     public void setHome() {
+        this.categoryName = null;
         getActivity().setTitle(getActivity().getResources().getString(R.string.app_name));
         mHomeRecyclerView.setVisibility(View.VISIBLE);
         mProductsContainer.setVisibility(View.GONE);

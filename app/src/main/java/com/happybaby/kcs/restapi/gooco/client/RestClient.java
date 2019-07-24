@@ -68,5 +68,4 @@ public interface RestClient {
 
     @GET("/stores/{storeId}/customer")
     Call<ResponseCustomer> getCustomer(@Path("storeId") String storeId, @Header("Authorization") String auth);
-
 }

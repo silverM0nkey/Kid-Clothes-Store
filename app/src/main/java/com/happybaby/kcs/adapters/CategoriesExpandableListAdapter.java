@@ -41,7 +41,7 @@ public class CategoriesExpandableListAdapter extends BaseExpandableListAdapter {
         View v = convertView;
 
         if (v == null) {
-            v = LayoutInflater.from(context).inflate(R.layout.item_selectable_list, parent, false);
+            v = LayoutInflater.from(context).inflate(R.layout.item_subcategory_list, parent, false);
         }
 
         TextView categoryName = v.findViewById(R.id.subcategory_name);

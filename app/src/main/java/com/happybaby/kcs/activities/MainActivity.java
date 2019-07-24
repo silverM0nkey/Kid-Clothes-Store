@@ -147,13 +147,17 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                     case R.id.navigation_profile:
                         viewPager.setCurrentItem(PROFILE_POSITION);
                         profileFragment.setUp();
+                        setTitle(getResources().getString(R.string.title_my_profil));
                         break;
                     case R.id.navigation_catalog:
                         viewPager.setCurrentItem(CATALOG_POSITION);
-
+                        setTitle(catalogFragment.getCategoryName()!=null ?
+                                catalogFragment.getCategoryName():
+                                getResources().getString(R.string.app_name));
                         break;
                     case R.id.navigation_store:
                         viewPager.setCurrentItem(STORE_POSITION);
+                        setTitle(getResources().getString(R.string.title_stores));
                         break;
                 }
                 return true;

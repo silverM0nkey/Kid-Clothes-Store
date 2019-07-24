@@ -6,7 +6,7 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string name="server_error">Server returned an error</string>
-    <string name="network_error">network failure</string>
+    <string name="network_error">Network failure</string>
 
     <string-array name="navigation_menu_items_array">
         <item>FAQ</item>
@@ -15,9 +15,13 @@
         <item>Contactos</item>
     </string-array>
 
-    <string name="tab_my_profil">MY PERFIL</string>
-    <string name="tab_catalog">CATALOGO</string>
+    <string name="tab_my_profil">MI PERFIL</string>
+    <string name="tab_catalog">CATÁLOGO</string>
     <string name="tab_stores">TIENDAS</string>
+
+    <string name="title_my_profil">Mi Perfil</string>
+    <string name="title_catalog">Catálogo</string>
+    <string name="title_stores">Tienda</string>
 
     <string-array name="sort_options_array">
         <item>PRECIO: DE MÁS CARO A MÁS BARATO</item>
@@ -97,8 +101,7 @@
         <item>5-6</item>
     </string-array>
 
-    <string name="stores_fragment">Proximamente tu directio de tiendas</string>
-
-    <string name="try_again_connection">Try again</string>
+    <string name="stores_fragment">Próximamente tu directorio de tiendas</string>
+    <string name="try_again_connection">Inténtalalo otra vez</string>
 
 </resources>
