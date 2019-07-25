@@ -1,6 +1,7 @@
 package com.happybaby.kcs.restapi.gooco;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 
@@ -13,10 +14,10 @@ public abstract class CallbackWithRetry<T> implements Callback<T> {
 
     private static final int TOTAL_RETRIES = 3;
     private int retryCount = 0;
-    private Activity activity;
+    private Context context;
 
-    public CallbackWithRetry(Activity activity) {
-        this.activity = activity;
+    public CallbackWithRetry(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -31,10 +32,10 @@ public abstract class CallbackWithRetry<T> implements Callback<T> {
     }
 
     public void onFinalFailure() {
-        if (activity != null) {
-            Intent intent = new Intent(activity, ConnectionErrorActivity.class);
+        if (context != null) {
+            Intent intent = new Intent(context, ConnectionErrorActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            activity.startActivity(intent);
+            context.startActivity(intent);
         }
     }
 

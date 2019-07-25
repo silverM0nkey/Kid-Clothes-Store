@@ -24,9 +24,8 @@ public class GeneralInfoActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_information);
-
         setupToolbar();
-        setupRestClient();
+
 
         int selectedItem = getIntent().getExtras().getInt(PARAM_TYPE);
         String storeId = Integer.valueOf(getIntent().getExtras().getInt(PARAM_STORE_ID)).toString();

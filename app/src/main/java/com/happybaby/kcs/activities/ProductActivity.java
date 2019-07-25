@@ -78,7 +78,6 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
         setupToolbar();
-        setupRestClient();
         this.storeId = getIntent().getExtras().getString(PARAM_STORE_ID);
         this.selectedItem = getIntent().getExtras().getString(PARAM_MODEL_ID);
         this.finalPrice = getIntent().getExtras().getInt(PARAM_FINAL_PRICE);
