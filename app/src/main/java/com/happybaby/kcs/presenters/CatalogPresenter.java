@@ -1,9 +1,6 @@
 package com.happybaby.kcs.presenters;
 
 import android.content.Intent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.happybaby.kcs.Helpers.CatalogHelper;
@@ -28,7 +25,7 @@ import java.util.stream.Collectors;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class CatalogPresenter {
+public class CatalogPresenter extends BasePresenter{
 
     private FilterQueryModel filterQueryModel;
     private ArrayList<ResponseProduct> responseResults;
@@ -41,12 +38,13 @@ public class CatalogPresenter {
     private String categoryName;
 
     public CatalogPresenter(CatalogView catalogView, String storeId) {
+        super();
         this.filterQueryModel = new FilterQueryModel();
         this.catalogView =  catalogView;
         this.storeId = storeId;
     }
 
-    public void getHomeCategories(RestClient restClient) {
+    public void getHomeCategories() {
         Call<ResponseHome> call = restClient.getHome(this.storeId);
         call.enqueue(new CallbackWithRetry<ResponseHome>(catalogView.getContext()) {
 
@@ -63,7 +61,7 @@ public class CatalogPresenter {
         });
     }
 
-    public void getProducts(RestClient restClient, String categoryId, String categoryName) {
+    public void getProducts(String categoryId, String categoryName) {
         this.categoryName = categoryName;
         HashMap<String, String> params = new HashMap<>();
         params.put(restClient.PARAM_CATEGORY_ID, categoryId);

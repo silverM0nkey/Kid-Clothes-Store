@@ -15,6 +15,7 @@ import com.happybaby.kcs.activities.LoginActivity;
 import com.happybaby.kcs.activities.MainActivity;
 import com.happybaby.kcs.R;
 import com.happybaby.kcs.models.CustomerProfile;
+import com.happybaby.kcs.presenters.ProfilePresenter;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
@@ -26,9 +27,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Button logout;
     private Button login;
 
+    private ProfilePresenter profilePresenter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.profilePresenter = new ProfilePresenter(this);
     }
 
     @Override
@@ -51,15 +55,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     public void onClick(View view) {
-        Context context = this.getContext();
         if (view.getId() == R.id.save_button) {
-            Toast.makeText(context, getResources().getString(R.string.modification_not_available), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getResources().getString(R.string.modification_not_available), Toast.LENGTH_SHORT).show();
         } else if (view.getId() == R.id.logout_button) {
-            CustomerProfile.getCustomerProfile().logout();
+            profilePresenter.logout();
             ((MainActivity)getActivity()).shoppingCartInActionbarUpdate();
-            setUp();
         } else if  (view.getId() == R.id.login_button) {
-            Intent intent = new Intent(context, LoginActivity.class);
+            Intent intent = new Intent(getContext(), LoginActivity.class);
             startActivity(intent);
         }
     }
@@ -67,31 +69,36 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        setUp();
+        profilePresenter.setUp();
     }
 
-    public void setUp() {
-        if (CustomerProfile.getCustomerProfile().getEmail().equals(CustomerProfile.CUSTOMER_ANONYMOUS)) {
-            name.setVisibility(View.GONE);
-            lastName.setVisibility(View.GONE);
-            email.setVisibility(View.GONE);
-            phone.setVisibility(View.GONE);
-            saveButton.setVisibility(View.GONE);
-            logout.setVisibility(View.GONE);
-            login.setVisibility(View.VISIBLE);
-        } else {
-            name.setVisibility(View.VISIBLE);
-            lastName.setVisibility(View.VISIBLE);
-            email.setVisibility(View.VISIBLE);
-            phone.setVisibility(View.VISIBLE);
-            saveButton.setVisibility(View.VISIBLE);
-            logout.setVisibility(View.VISIBLE);
-            login.setVisibility(View.GONE);
-            name.setText(CustomerProfile.getCustomerProfile().getFirstName());
-            lastName.setText(CustomerProfile.getCustomerProfile().getLastName());
-            email.setText(CustomerProfile.getCustomerProfile().getEmail());
-            phone.setText(CustomerProfile.getCustomerProfile().getPhone());
-
-        }
+    public void setUp(){
+        profilePresenter.setUp();
     }
+
+    public void setLogin() {
+        name.setVisibility(View.GONE);
+        lastName.setVisibility(View.GONE);
+        email.setVisibility(View.GONE);
+        phone.setVisibility(View.GONE);
+        saveButton.setVisibility(View.GONE);
+        logout.setVisibility(View.GONE );
+        login.setVisibility(View.VISIBLE);
+    }
+
+    public void setCustomerProfile(String sFirstName, String sLastName, String sEmail, String sPhone) {
+        name.setVisibility(View.VISIBLE);
+        lastName.setVisibility(View.VISIBLE);
+        email.setVisibility(View.VISIBLE);
+        phone.setVisibility(View.VISIBLE);
+        saveButton.setVisibility(View.VISIBLE);
+        logout.setVisibility(View.VISIBLE);
+        login.setVisibility(View.GONE);
+        name.setText(sFirstName);
+        lastName.setText(sLastName);
+        email.setText(sEmail);
+        phone.setText(sPhone);
+    }
+
+
 }

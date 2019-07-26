@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,9 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.happybaby.kcs.Helpers.CatalogHelper;
 import com.happybaby.kcs.activities.FiltersActivity;
 import com.happybaby.kcs.activities.ProductActivity;
 import com.happybaby.kcs.R;
@@ -29,14 +27,14 @@ import com.happybaby.kcs.adapters.ProductsRecyclerListAdapter;
 import com.happybaby.kcs.adapters.SortOptionsListAdapter;
 import com.happybaby.kcs.fragments.interfaces.CatalogListener;
 import com.happybaby.kcs.fragments.interfaces.CatalogView;
-import com.happybaby.kcs.models.fixed.SortOptionItemModel;
+import com.happybaby.kcs.presenters.BasePresenter;
 import com.happybaby.kcs.presenters.CatalogPresenter;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseHome;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseProduct;
 
 import java.util.ArrayList;
 
-public class CatalogFragment extends BaseFragment implements LinearLayout.OnClickListener,
+public class CatalogFragment extends Fragment implements LinearLayout.OnClickListener,
         ListView.OnItemClickListener, CatalogListener, CatalogView {
 
     final public static String PARAM_STORE_ID = "storeId";
@@ -103,7 +101,7 @@ public class CatalogFragment extends BaseFragment implements LinearLayout.OnClic
         sortOptionsListAdapter = new SortOptionsListAdapter(getActivity(), catalogPresenter.getSortOptions());
         sortByListOptions.setAdapter(sortOptionsListAdapter);
         sortByListOptions.setOnItemClickListener(this);
-        catalogPresenter.getHomeCategories(restClient);
+        catalogPresenter.getHomeCategories();
 
         return rootView;
     }
@@ -116,7 +114,7 @@ public class CatalogFragment extends BaseFragment implements LinearLayout.OnClic
         getActivity().setTitle(categoryName);
         mProgressBar.setVisibility(View.VISIBLE);
         sortByListOptions.setVisibility(View.GONE);
-        catalogPresenter.getProducts(restClient, categoryId, categoryName);
+        catalogPresenter.getProducts(categoryId, categoryName);
     }
 
     public String getCategoryName(){
@@ -218,5 +216,11 @@ public class CatalogFragment extends BaseFragment implements LinearLayout.OnClic
 
     public Context getContext() {
         return getActivity();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        catalogPresenter = null;
     }
 }

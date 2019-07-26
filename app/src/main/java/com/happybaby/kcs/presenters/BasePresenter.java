@@ -1,4 +1,4 @@
-package com.happybaby.kcs.fragments;
+package com.happybaby.kcs.presenters;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,13 +11,12 @@ import com.happybaby.kcs.restapi.gooco.client.RestClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class BaseFragment extends Fragment {
+public class BasePresenter {
 
     protected Retrofit retrofit;
     protected RestClient restClient;
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public BasePresenter() {
         setupRestClient();
     }
 
