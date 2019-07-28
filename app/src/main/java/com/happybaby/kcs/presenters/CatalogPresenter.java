@@ -11,7 +11,6 @@ import com.happybaby.kcs.fragments.interfaces.CatalogView;
 import com.happybaby.kcs.models.FilterQueryModel;
 import com.happybaby.kcs.models.fixed.SortOptionItemModel;
 import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
-import com.happybaby.kcs.restapi.gooco.client.RestClient;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseHome;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseProduct;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseProductsResults;
@@ -151,5 +150,9 @@ public class CatalogPresenter extends BasePresenter{
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public void unbindView(){
+        this.catalogView = null;
     }
 }

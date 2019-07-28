@@ -20,25 +20,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public abstract class BaseActivity extends AppCompatActivity  {
 
     protected Toolbar toolbar;
-    private Retrofit retrofit;
-    protected RestClient restClient;
-
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setupRestClient();
-    }
-
-    protected void setupRestClient(){
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl(ConnectionsProfile.MOCK_API)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        restClient = retrofit.create(RestClient.class);
-    }
 
     protected void setupToolbar(){
         toolbar = findViewById(R.id.toolbar);

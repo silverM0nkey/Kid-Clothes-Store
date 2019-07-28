@@ -1,30 +1,38 @@
 package com.happybaby.kcs.presenters;
 
-import com.happybaby.kcs.fragments.ProfileFragment;
+import com.happybaby.kcs.fragments.interfaces.ProfileView;
 import com.happybaby.kcs.models.CustomerProfile;
 
 public class ProfilePresenter {
 
-    ProfileFragment profileFragment;
+    ProfileView profileView;
 
-    public ProfilePresenter(ProfileFragment profileFragment) {
-        this.profileFragment = profileFragment;
+    public ProfilePresenter(ProfileView profileView) {
+        this.profileView = profileView;
     }
 
     public void setUp() {
         if (CustomerProfile.getCustomerProfile().getEmail().equals(CustomerProfile.CUSTOMER_ANONYMOUS)) {
-            profileFragment.setLogin();
+            if (profileView != null) {
+                profileView.setLogin();
+            }
         } else {
-            profileFragment.setCustomerProfile(CustomerProfile.getCustomerProfile().getFirstName(),
-                CustomerProfile.getCustomerProfile().getLastName(),
-                CustomerProfile.getCustomerProfile().getEmail(),
-                CustomerProfile.getCustomerProfile().getPhone());
+            if (profileView != null) {
+                profileView.setCustomerProfile(CustomerProfile.getCustomerProfile().getFirstName(),
+                        CustomerProfile.getCustomerProfile().getLastName(),
+                        CustomerProfile.getCustomerProfile().getEmail(),
+                        CustomerProfile.getCustomerProfile().getPhone());
+            }
         }
     }
 
     public void logout() {
         CustomerProfile.getCustomerProfile().logout();
         setUp();
+    }
+
+    public void unbindView(){
+        this.profileView = null;
     }
 
 

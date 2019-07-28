@@ -20,16 +20,10 @@ public class SizesListAdapter extends BaseAdapter {
 
     protected Context context;
     protected List<SizeModel> items;
-    protected boolean fromAdd;
 
-    public SizesListAdapter(Context context, List<SizeModel> items, boolean fromAdd) {
+    public SizesListAdapter(Context context, List<SizeModel> items) {
         this.context = context;
         this.items = items;
-        this.fromAdd = fromAdd;
-    }
-
-    public boolean isFromAdd() {
-        return fromAdd;
     }
 
     @Override

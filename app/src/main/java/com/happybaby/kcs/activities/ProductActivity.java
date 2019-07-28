@@ -1,5 +1,6 @@
 package com.happybaby.kcs.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.LayerDrawable;
@@ -20,20 +21,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happybaby.kcs.R;
+import com.happybaby.kcs.activities.interfaces.ProductView;
 import com.happybaby.kcs.adapters.SizesListAdapter;
 import com.happybaby.kcs.bd.room.AppDatabase;
-import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.models.SizeModel;
 import com.happybaby.kcs.models.CustomerProfile;
+import com.happybaby.kcs.presenters.ProductPresenter;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseSize;
-import com.happybaby.kcs.utils.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class ProductActivity extends BaseActivity implements View.OnClickListener, ListView.OnItemClickListener {
+public class ProductActivity extends BaseActivity implements ProductView,
+        View.OnClickListener, ListView.OnItemClickListener {
 
     public static String PARAM_STORE_ID = "storeId";
     public static String PARAM_PRODUCT_NAME = "productName";
@@ -51,25 +52,24 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
     public static String PARAM_SIZES = "size";
 
     private String productName;
-    private String selectedItem;
     private String shareUrl;
     private String storeId;
-    private String currency;
-    private ArrayList<String> images;
-    private ResponseSize currentSize;
-    private ArrayList<ResponseSize> sizes;
+    private ListView sizesList;
     private SizesListAdapter sizesListAdapter;
     private PopupWindow sizesPopupWindow;
     private Integer finalPrice;
     protected MenuItem itemCart;
     protected TextView sizesButton;
+    private TextView finalPriceText;
+    private TextView originalPriceText;
+    private ProductPresenter productPresenter;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         itemCart = menu.findItem(R.id.action_cart);
         LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
-        setBadgeCount(this, icon, getNumberOfProducts(CustomerProfile.getCustomerProfile().getEmail()).toString());
+        setBadgeCount(this, icon, productPresenter.getNumberOfProducts().toString());
         return true;
     }
 
@@ -78,27 +78,26 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
         setupToolbar();
+        setTitle(productName);
         this.storeId = getIntent().getExtras().getString(PARAM_STORE_ID);
-        this.selectedItem = getIntent().getExtras().getString(PARAM_MODEL_ID);
-        this.finalPrice = getIntent().getExtras().getInt(PARAM_FINAL_PRICE);
         this.shareUrl = getIntent().getExtras().getString(PARAM_URL);
-        this.sizes = getIntent().getExtras().getParcelableArrayList(PARAM_SIZES);
-        this.images = getIntent().getExtras().getStringArrayList(PARAM_IMAGES);
-        this.productName = getIntent().getExtras().getString(PARAM_PRODUCT_NAME);
-        this.currency = getIntent().getExtras().getString(PARAM_CURRENCY);
+        String selectedItem = getIntent().getExtras().getString(PARAM_MODEL_ID);
+        Integer finalPrice = getIntent().getExtras().getInt(PARAM_FINAL_PRICE);
+        ArrayList<ResponseSize> sizes = getIntent().getExtras().getParcelableArrayList(PARAM_SIZES);
+        ArrayList<String> images = getIntent().getExtras().getStringArrayList(PARAM_IMAGES);
+        String productName = getIntent().getExtras().getString(PARAM_PRODUCT_NAME);
+        String currency = getIntent().getExtras().getString(PARAM_CURRENCY);
         Integer originalPrice = getIntent().getExtras().getInt(PARAM_ORIGINAL_PRICE);
         String finalPriceType = getIntent().getExtras().getString(PARAM_FINAL_PRICE_TYPE);
         String sku = getIntent().getExtras().getString(PARAM_SKU);
         String composition = getIntent().getExtras().getString(PARAM_COMPOSITION);
         String color = getIntent().getExtras().getString(PARAM_COLOR);
-
         String careUrlImage = getIntent().getExtras().getString(PARAM_CARE);
 
-        setTitle(productName);
+        productPresenter = new ProductPresenter(this, storeId, selectedItem,
+                productName, originalPrice, finalPrice, images.get(0), currency, sizes);
 
         ImageView mainImage = findViewById(R.id.product_image);
-        TextView finalPriceText =  findViewById(R.id.final_price);
-        TextView originalPriceText =  findViewById(R.id.original_price);
         TextView skuTextsView =  findViewById(R.id.sku);
         TextView compositionText =  findViewById(R.id.text_composition);
         TextView colorText =  findViewById(R.id.color_text);
@@ -108,9 +107,10 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         TextView shoppingGuideText =  findViewById(R.id.shopping_guide_text);
         TextView sizesGuideButton = findViewById(R.id.sizes_guide);
         ImageView sizesExpand = findViewById(R.id.sizes_expand);
-        sizesButton = findViewById(R.id.sizes);
-
         Button addButton = findViewById(R.id.button_add);
+        sizesButton = findViewById(R.id.sizes);
+        finalPriceText =  findViewById(R.id.final_price);
+        originalPriceText =  findViewById(R.id.original_price);
 
         shareImage.setOnClickListener(this);
         wishImage.setOnClickListener(this);
@@ -119,21 +119,16 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         sizesExpand.setOnClickListener(this);
         sizesButton.setOnClickListener(this);
 
-        if (this.sizes.stream().filter(s -> s.getStockQty() > 0).findFirst().orElse(null) == null) {
-            addButton.setEnabled(false);
-        } else {
+        if (productPresenter.isAddButtonEnabled()) {
             addButton.setOnClickListener(this);
+        } else {
+            addButton.setEnabled(false);
         }
 
         Picasso.with(this).load(images.get(0)).placeholder(ContextCompat.getDrawable(this, R.drawable.image_not_found))
                 .error(ContextCompat.getDrawable(this, R.drawable.image_not_found)).into(mainImage);
 
-        finalPriceText.setText(String.format("%s %s", Util.getSymbol(currency), Float.valueOf(finalPrice.floatValue()/100).toString()));
-
-        if (originalPrice !=  null &&  !originalPrice.equals(finalPrice)) {
-            originalPriceText.setText(String.format("%s %s", Util.getSymbol(currency), Float.valueOf(originalPrice.floatValue() / 100).toString()));
-            originalPriceText.setPaintFlags(originalPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
+        productPresenter.setPrices();
 
         skuTextsView.setText(sku);
         compositionText.setText(composition);
@@ -145,10 +140,13 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onStart() {
         super.onStart();
-        if (itemCart != null) {
-            LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
-            setBadgeCount(this, icon, getNumberOfProducts(CustomerProfile.getCustomerProfile().getEmail()).toString());
-        }
+        updateCartIcon();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        productPresenter.unbindView();
     }
 
     @Override
@@ -167,11 +165,7 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
             intent.putExtra(Intent.EXTRA_TEXT, this.shareUrl);
             startActivity(Intent.createChooser(intent, "Share"));
         } else if (view.getId() == R.id.button_add) {
-            if (currentSize == null) {
-                showSizePopup(true);
-            } else {
-                addProductToShoppingCart(storeId, selectedItem, productName, currentSize, finalPrice, images.get(0), currency);
-            }
+            productPresenter.addProduct();
         } else if (view.getId() == R.id.wish_image) {
             Toast.makeText(this, getResources().getString(R.string.wish_list_not_available), Toast.LENGTH_SHORT).show();
         } else if (view.getId() == R.id.sizes_guide) {
@@ -186,37 +180,14 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-    private void addProductToShoppingCart(String storeId, String modelId, String name, ResponseSize currentSize, Integer finalPrice, String urlImage, String currency) {
-        ShoppingCartProduct shoppingCart = AppDatabase.getInstance(this).shoppingCartDao().findProductsByCustomerAndIds(CustomerProfile.getCustomerProfile().getEmail(), modelId, currentSize.getVariantId());
-        if (shoppingCart != null) {
-            shoppingCart.setQty(shoppingCart.getQty()+1);
-            shoppingCart.setFinalPrice(finalPrice);
-            AppDatabase.getInstance(this).shoppingCartDao().insertProducts(shoppingCart);
-        } else {
-            AppDatabase.getInstance(this).shoppingCartDao().
-                    insertProducts(new ShoppingCartProduct(CustomerProfile.getCustomerProfile().getEmail(), storeId,
-                            modelId, currentSize.getVariantId(), name, finalPrice, currentSize.getName(), urlImage, 1, currency) );
-        }
-        if (itemCart != null) {
-            LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
-            setBadgeCount(this, icon, getNumberOfProducts(CustomerProfile.getCustomerProfile().getEmail()).toString());
-        }
-        Toast.makeText(this, getResources().getString(R.string.product_added), Toast.LENGTH_SHORT).show();
-    }
-
-    private void showSizePopup(boolean fromAdd) {
+    public void showSizePopup(boolean fromAdd) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View sizeLayout = inflater.inflate(R.layout.popup_size, null);
 
-        ListView sizesList = sizeLayout.findViewById(R.id.color_list);
-
+        sizesList = sizeLayout.findViewById(R.id.color_list);
         sizesList.setOnItemClickListener(this);
 
-        List<SizeModel> sizesModel = sizes
-                .stream().map(rs -> new SizeModel(rs.getVariantId(), rs.getName(), rs.getStockQty(), rs.getVariantId().equals(this.currentSize != null ? this.currentSize.getVariantId() : null))).
-                        collect(Collectors.toList());
-        sizesListAdapter = new SizesListAdapter(this, sizesModel, fromAdd);
-        sizesList.setAdapter(sizesListAdapter);
+        productPresenter.loadSizeModel(fromAdd);
 
         sizesPopupWindow = new PopupWindow(
                 sizeLayout,
@@ -224,7 +195,6 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
         sizesPopupWindow.setElevation(10.0f);
-
 
         View root = this.findViewById(R.id.root_layout);
         sizesPopupWindow.showAtLocation(root, Gravity.CENTER,0,0);
@@ -235,35 +205,53 @@ public class ProductActivity extends BaseActivity implements View.OnClickListene
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_cart){
-            if (AppDatabase.getInstance(this).shoppingCartDao().countProductsByCustomer(CustomerProfile.getCustomerProfile().getEmail()) > 0) {
-                Intent intent = new Intent(this, ShoppingCartActivity.class);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, getResources().getString(R.string.empty_cart), Toast.LENGTH_SHORT).show();
-            }
+            productPresenter.onClickShoppingCart();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (sizesListAdapter.getItems().get(i).getStockQty() > 0) {
-            currentSize = sizesListAdapter.getItems().get(i).toResponseSize();
-            sizesButton.setText(currentSize.getName());
-            sizesPopupWindow.dismiss();
-            if (sizesListAdapter.isFromAdd()){
-                addProductToShoppingCart(storeId, selectedItem, productName, currentSize, finalPrice, images.get(0), currency);
-            }
-        }
+    public void goToShoppingCart() {
+        Intent intent = new Intent(this, ShoppingCartActivity.class);
+        startActivity(intent);
     }
 
+    public void showEmptyCartMessage() {
+        Toast.makeText(this, getResources().getString(R.string.empty_cart), Toast.LENGTH_SHORT).show();
+    }
 
-    private Integer getNumberOfProducts(String customer) {
-        List<ShoppingCartProduct> products =  AppDatabase.getInstance(this).shoppingCartDao().findProductsByCustomer(customer);
-        Integer totalNumberOfProducts= 0;
-        for (ShoppingCartProduct product: products){
-            totalNumberOfProducts =totalNumberOfProducts + product.getQty();
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int sizeSelected, long l) {
+        productPresenter.selectSize(sizeSelected);
+    }
+
+    public void updateCartIcon() {
+        if (itemCart != null) {
+            LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
+            setBadgeCount(this, icon, productPresenter.getNumberOfProducts().toString());
         }
-        return totalNumberOfProducts;
+        Toast.makeText(this, getResources().getString(R.string.product_added), Toast.LENGTH_SHORT).show();
+    }
+
+    public void loadSizeModelFinished(List<SizeModel> items) {
+        sizesListAdapter = new SizesListAdapter(this, items);
+        sizesList.setAdapter(sizesListAdapter);
+    }
+
+    public void loadSelectionFinished(ResponseSize currentSize) {
+        sizesButton.setText(currentSize.getName());
+        sizesPopupWindow.dismiss();
+    }
+
+    public void setOriginalPrice(String finalPrice){
+        originalPriceText.setText(finalPrice);
+        originalPriceText.setPaintFlags(originalPriceText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+    }
+
+    public void setFinalPrice(String finalPrice){
+        finalPriceText.setText(finalPrice);
+    }
+
+    public Context getContext() {
+        return this;
     }
 }

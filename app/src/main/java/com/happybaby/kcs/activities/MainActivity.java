@@ -20,26 +20,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happybaby.kcs.R;
+import com.happybaby.kcs.activities.interfaces.MainView;
 import com.happybaby.kcs.adapters.CategoriesExpandableListAdapter;
 import com.happybaby.kcs.adapters.MenuAdapter;
 import com.happybaby.kcs.adapters.SimpleFragmentPagerAdapter;
 import com.happybaby.kcs.bd.room.AppDatabase;
-import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.components.NonSwipeableViewPager;
 import com.happybaby.kcs.fragments.CatalogFragment;
 import com.happybaby.kcs.fragments.ProfileFragment;
 import com.happybaby.kcs.fragments.StoresFragment;
 import com.happybaby.kcs.models.fixed.MenuItemModel;
 import com.happybaby.kcs.models.CustomerProfile;
-import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
+import com.happybaby.kcs.presenters.MainPresenter;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseCategory;
 
 import java.util.ArrayList;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Response;
 
-public class MainActivity extends BaseActivity implements ListView.OnItemClickListener, View.OnClickListener {
+
+public class MainActivity extends BaseActivity implements MainView,
+        ListView.OnItemClickListener, View.OnClickListener {
 
     final public int PROFILE_POSITION = 0;
     final public int CATALOG_POSITION = 1;
@@ -56,6 +56,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     private ProfileFragment profileFragment;
     protected MenuItem itemCart;
 
+    private MainPresenter mainPresenter;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -68,6 +70,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainPresenter = new MainPresenter(this);
 
         ListView mMenuList = findViewById(R.id.menu_list);
         TextView menuHome = findViewById(R.id.home_text);
@@ -77,7 +80,6 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         expandableListView = findViewById(R.id.data_categories);
 
         setupToolbar();
-        setupRestClient();
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -100,32 +102,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
         Context context = this;
         this.storeId = getIntent().getExtras().getInt(PARAM_STORE_ID);
-        Call<List<ResponseCategory>> call = restClient.getCategories(Integer.valueOf(this.storeId).toString());
-        call.enqueue(new CallbackWithRetry<List<ResponseCategory>>(this) {
 
-            @Override
-            public void onResponse(Call<List<ResponseCategory>> call, Response<List<ResponseCategory>> response) {
-                if (response.isSuccessful()) {
-                    List<ResponseCategory> categories = response.body();
-                    final CategoriesExpandableListAdapter categoriesExpandableListAdapter = new CategoriesExpandableListAdapter(categories, context);
-                    expandableListView.setAdapter(categoriesExpandableListAdapter);
-
-                    expandableListView.setOnChildClickListener((ExpandableListView parent, View v, int groupPosition, int childPosition, long id) -> {
-                            CategoriesExpandableListAdapter adapter = (CategoriesExpandableListAdapter)expandableListView.getExpandableListAdapter();
-                            String categoryId = adapter.getGroup(groupPosition).getChildren().get(childPosition).getCategoryId();
-                            String categoryName = adapter.getGroup(groupPosition).getChildren().get(childPosition).getName();
-                            mDrawerLayout.closeDrawer(Gravity.LEFT, true);
-                            catalogFragment.onChangeCategory(categoryId, categoryName);
-                            navView.setSelectedItemId(R.id.navigation_catalog);
-                            return true;
-                    });
-                } else {
-                    System.out.print(response.errorBody());
-                    Toast.makeText(context, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
+        mainPresenter.loadCategories(this.storeId);
         viewPager =  findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(2);
 
@@ -167,10 +145,36 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         shoppingCartInActionbarUpdate();
     }
 
+    public void loadCategoriesFinished(List<ResponseCategory> categories) {
+        final CategoriesExpandableListAdapter categoriesExpandableListAdapter =
+                new CategoriesExpandableListAdapter(categories, this);
+        expandableListView.setAdapter(categoriesExpandableListAdapter);
+
+        expandableListView.setOnChildClickListener((ExpandableListView parent, View v, int groupPosition, int childPosition, long id) -> {
+            CategoriesExpandableListAdapter adapter = (CategoriesExpandableListAdapter) expandableListView.getExpandableListAdapter();
+            String categoryId = adapter.getGroup(groupPosition).getChildren().get(childPosition).getCategoryId();
+            String categoryName = adapter.getGroup(groupPosition).getChildren().get(childPosition).getName();
+            mDrawerLayout.closeDrawer(Gravity.LEFT, true);
+            catalogFragment.onChangeCategory(categoryId, categoryName);
+            navView.setSelectedItemId(R.id.navigation_catalog);
+            return true;
+        });
+    }
+
+    public void loadCategoriesFail(){
+        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
         shoppingCartInActionbarUpdate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mainPresenter.unbindView();
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -208,21 +212,17 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     public void shoppingCartInActionbarUpdate() {
         if (itemCart != null) {
             LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
-            setBadgeCount(this, icon, getNumberOfProducts(CustomerProfile.getCustomerProfile().getEmail()).toString());
+            setBadgeCount(this, icon,
+                    mainPresenter.getNumberOfProducts(CustomerProfile.getCustomerProfile().getEmail()).toString());
         }
-    }
-
-    private Integer getNumberOfProducts(String customer) {
-        List<ShoppingCartProduct> products =  AppDatabase.getInstance(this).shoppingCartDao().findProductsByCustomer(customer);
-        Integer totalNumberOfProducts= 0;
-        for (ShoppingCartProduct product: products){
-            totalNumberOfProducts = totalNumberOfProducts + product.getQty();
-        }
-        return totalNumberOfProducts;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public Context getContext() {
+        return this;
     }
 }

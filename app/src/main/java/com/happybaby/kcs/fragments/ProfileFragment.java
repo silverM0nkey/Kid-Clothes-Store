@@ -14,10 +14,12 @@ import android.widget.Toast;
 import com.happybaby.kcs.activities.LoginActivity;
 import com.happybaby.kcs.activities.MainActivity;
 import com.happybaby.kcs.R;
+import com.happybaby.kcs.activities.interfaces.ProductView;
+import com.happybaby.kcs.fragments.interfaces.ProfileView;
 import com.happybaby.kcs.models.CustomerProfile;
 import com.happybaby.kcs.presenters.ProfilePresenter;
 
-public class ProfileFragment extends Fragment implements View.OnClickListener {
+public class ProfileFragment extends Fragment implements ProfileView, View.OnClickListener {
 
     private EditText name;
     private EditText lastName;
@@ -72,6 +74,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         profilePresenter.setUp();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        profilePresenter.unbindView();
+    }
+
     public void setUp(){
         profilePresenter.setUp();
     }
@@ -100,5 +108,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         phone.setText(sPhone);
     }
 
-
+    public Context getContext() {
+        return getActivity();
+    }
 }

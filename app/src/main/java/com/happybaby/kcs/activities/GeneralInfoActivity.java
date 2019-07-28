@@ -7,18 +7,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happybaby.kcs.R;
-import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
-import com.happybaby.kcs.restapi.gooco.responses.ResponseGeneralInfo;
-import retrofit2.Call;
-import retrofit2.Response;
+import com.happybaby.kcs.activities.interfaces.GeneralInfoView;
+import com.happybaby.kcs.presenters.GeneralInfoPresenter;
 
-public class GeneralInfoActivity extends BaseActivity {
+
+public class GeneralInfoActivity extends BaseActivity implements GeneralInfoView {
 
     private TextView contentText;
     public static String PARAM_TYPE = "type";
     public static String PARAM_STORE_ID = "storeId";
     public enum Types {TYPE_FAQ, TYPE_SHOPPING_GUIDE, TYPE_SHIPPING_COSTS, TYPE_CONTACT}
-    public static String shippingCostsContent = "<html><header><title>Shipping Costs</title></header><body><h1 ALIGN=\"center\" STYLE=\"font:36pt/40pt courier;\">Hello world!</h1></body></html>";
+
+    private GeneralInfoPresenter generalInfoPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,40 +26,28 @@ public class GeneralInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_general_information);
         setupToolbar();
 
+        generalInfoPresenter = new GeneralInfoPresenter(this);
 
         int selectedItem = getIntent().getExtras().getInt(PARAM_TYPE);
         String storeId = Integer.valueOf(getIntent().getExtras().getInt(PARAM_STORE_ID)).toString();
         setTitle(getResources().getStringArray(R.array.navigation_menu_items_array)[selectedItem]);
 
         contentText = findViewById(R.id.content_text);
-        Call<ResponseGeneralInfo> call = null;
-        if (selectedItem == Types.TYPE_FAQ.ordinal()){
-            call = restClient.getFaq(storeId);        } else  if  (selectedItem == Types.TYPE_SHOPPING_GUIDE.ordinal()) {
-            call = restClient.getShoppingGuide(storeId);
-        } else  if  (selectedItem == Types.TYPE_SHIPPING_COSTS.ordinal()) {
-            //Endpoint returns malformed json
-            //call = restClient.getShippingCosts(storeId);
-        }  else  if  (selectedItem == Types.TYPE_CONTACT.ordinal()) {
-            call = restClient.getContact(storeId);
-        }
+        generalInfoPresenter.loadContent(storeId, selectedItem);
+    }
 
-        if (call != null) {
-            Context context = this;
-            call.enqueue(new CallbackWithRetry<ResponseGeneralInfo>(this) {
+    public void loadInfoFinished(String content) {
+        contentText.setText(HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY));
+    }
 
-                @Override
-                public void onResponse(Call<ResponseGeneralInfo> call, Response<ResponseGeneralInfo> response) {
-                    if (response.isSuccessful()) {
-                        ResponseGeneralInfo responseGeneralInfo = response.body();
-                        contentText.setText(HtmlCompat.fromHtml(responseGeneralInfo.getContent(), HtmlCompat.FROM_HTML_MODE_LEGACY));
-                    } else {
-                        Toast.makeText(context, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        } else {
-            contentText.setText(HtmlCompat.fromHtml(shippingCostsContent, HtmlCompat.FROM_HTML_MODE_LEGACY));
-        }
+    public void loadInfoFail() {
+        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        generalInfoPresenter.unbindView();
     }
 
     @Override
@@ -68,5 +56,8 @@ public class GeneralInfoActivity extends BaseActivity {
         return true;
     }
 
+    public Context getContext(){
+        return this;
+    }
 
 }

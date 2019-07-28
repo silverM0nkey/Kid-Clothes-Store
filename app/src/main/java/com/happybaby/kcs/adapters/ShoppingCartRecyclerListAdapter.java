@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.happybaby.kcs.R;
-import com.happybaby.kcs.activities.ShoppingCartActivity;
 import com.happybaby.kcs.activities.interfaces.ShoppingCartListener;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.utils.Util;
@@ -23,11 +22,11 @@ public class ShoppingCartRecyclerListAdapter extends
 
     protected Context context;
     protected List<ShoppingCartProduct> products;
-    protected ShoppingCartListener shoppingCartActivity;
+    protected ShoppingCartListener shoppingCartLisener;
 
-    public ShoppingCartRecyclerListAdapter(Context context, ShoppingCartActivity shoppingCartActivity, List<ShoppingCartProduct> shoppingCart) {
+    public ShoppingCartRecyclerListAdapter(Context context, ShoppingCartListener shoppingCartListener, List<ShoppingCartProduct> shoppingCart) {
         this.context = context;
-        this.shoppingCartActivity = shoppingCartActivity;
+        this.shoppingCartLisener = shoppingCartListener;
         this.products = shoppingCart;
     }
 
@@ -68,16 +67,16 @@ public class ShoppingCartRecyclerListAdapter extends
         viewHolder.sizeProduct.setText(String.format("%s %s", context.getResources().getString(R.string.size), product.getSize()));
 
         viewHolder.removeItem.setOnClickListener(View -> {
-                shoppingCartActivity.onRemoveProduct(product.getModelId(), product.getVariantId());
+                shoppingCartLisener.onRemoveProduct(product.getModelId(), product.getVariantId());
         });
 
         viewHolder.moreQty.setOnClickListener(View -> {
-                shoppingCartActivity.onChangeQyt(product.getModelId(), product.getVariantId(), product.getQty() + 1);
+                shoppingCartLisener.onChangeQyt(product.getModelId(), product.getVariantId(), product.getQty() + 1);
         });
 
         viewHolder.lessQty.setOnClickListener(View -> {
                 if (product.getQty() > 1) {
-                    shoppingCartActivity.onChangeQyt(product.getModelId(), product.getVariantId(), product.getQty() - 1);
+                    shoppingCartLisener.onChangeQyt(product.getModelId(), product.getVariantId(), product.getQty() - 1);
                 }
         });
     }
