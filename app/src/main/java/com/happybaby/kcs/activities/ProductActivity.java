@@ -23,9 +23,7 @@ import android.widget.Toast;
 import com.happybaby.kcs.R;
 import com.happybaby.kcs.activities.interfaces.ProductView;
 import com.happybaby.kcs.adapters.SizesListAdapter;
-import com.happybaby.kcs.bd.room.AppDatabase;
 import com.happybaby.kcs.models.SizeModel;
-import com.happybaby.kcs.models.CustomerProfile;
 import com.happybaby.kcs.presenters.ProductPresenter;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseSize;
 import com.squareup.picasso.Picasso;
@@ -78,7 +76,6 @@ public class ProductActivity extends BaseActivity implements ProductView,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
         setupToolbar();
-        setTitle(productName);
         this.storeId = getIntent().getExtras().getString(PARAM_STORE_ID);
         this.shareUrl = getIntent().getExtras().getString(PARAM_URL);
         String selectedItem = getIntent().getExtras().getString(PARAM_MODEL_ID);
@@ -93,6 +90,7 @@ public class ProductActivity extends BaseActivity implements ProductView,
         String composition = getIntent().getExtras().getString(PARAM_COMPOSITION);
         String color = getIntent().getExtras().getString(PARAM_COLOR);
         String careUrlImage = getIntent().getExtras().getString(PARAM_CARE);
+        setTitle(productName);
 
         productPresenter = new ProductPresenter(this, storeId, selectedItem,
                 productName, originalPrice, finalPrice, images.get(0), currency, sizes);
@@ -237,7 +235,7 @@ public class ProductActivity extends BaseActivity implements ProductView,
         sizesList.setAdapter(sizesListAdapter);
     }
 
-    public void loadSelectionFinished(ResponseSize currentSize) {
+    public void selectionFinished(ResponseSize currentSize) {
         sizesButton.setText(currentSize.getName());
         sizesPopupWindow.dismiss();
     }

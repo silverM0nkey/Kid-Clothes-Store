@@ -10,7 +10,7 @@ import java.util.List;
 public interface ProductView {
 
     void loadSizeModelFinished(List<SizeModel> items);
-    void loadSelectionFinished(ResponseSize currentSize);
+    void selectionFinished(ResponseSize currentSize);
     void showSizePopup(boolean addFrom);
     void updateCartIcon();
     void setOriginalPrice(String finalPrice);

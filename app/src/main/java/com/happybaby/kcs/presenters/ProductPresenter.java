@@ -1,15 +1,10 @@
 package com.happybaby.kcs.presenters;
 
-import android.content.Intent;
-import android.widget.Toast;
-
-import com.happybaby.kcs.R;
-import com.happybaby.kcs.activities.ShoppingCartActivity;
 import com.happybaby.kcs.activities.interfaces.ProductView;
-import com.happybaby.kcs.bd.room.AppDatabase;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.models.CustomerProfile;
 import com.happybaby.kcs.models.SizeModel;
+import com.happybaby.kcs.models.interactors.ShoppingCartInteractor;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseSize;
 import com.happybaby.kcs.utils.Util;
 
@@ -31,6 +26,7 @@ public class ProductPresenter {
     private String urlImage;
     private String currency;
     private ArrayList<ResponseSize> sizes;
+    private ShoppingCartInteractor shoppingCartInteractor;
 
     public ProductPresenter(ProductView productView, String storeId, String selectedItem, String productName, Integer originalPrice, Integer finalPrice, String urlImage, String currency, ArrayList<ResponseSize> sizes) {
         this.productView = productView;
@@ -42,13 +38,12 @@ public class ProductPresenter {
         this.urlImage = urlImage;
         this.currency = currency;
         this.sizes = sizes;
+        this.shoppingCartInteractor = new ShoppingCartInteractor(this.productView.getContext());
     }
 
     public Integer getNumberOfProducts() {
         if (this.productView != null) {
-            List<ShoppingCartProduct> products =
-                    AppDatabase.getInstance(this.productView.getContext()).shoppingCartDao().
-                            findProductsByCustomer(CustomerProfile.getCustomerProfile().getEmail());
+            List<ShoppingCartProduct> products = shoppingCartInteractor.getCurrentUserProducts();
             Integer totalNumberOfProducts = 0;
             for (ShoppingCartProduct product : products) {
                 totalNumberOfProducts = totalNumberOfProducts + product.getQty();
@@ -61,9 +56,7 @@ public class ProductPresenter {
 
     private void addProductToShoppingCart(String storeId, String modelId, String name, ResponseSize currentSize, Integer finalPrice, String urlImage, String currency) {
         if (this.productView != null) {
-            ShoppingCartProduct shoppingCart = AppDatabase.getInstance(this.productView.getContext()).
-                    shoppingCartDao().findProductsByCustomerAndIds(CustomerProfile.getCustomerProfile().
-                    getEmail(), modelId, currentSize.getVariantId());
+            ShoppingCartProduct shoppingCart = shoppingCartInteractor.getCurrentUserProductByIds(modelId, currentSize.getVariantId());
             if (shoppingCart != null) {
                 shoppingCart.setQty(shoppingCart.getQty() + 1);
                 shoppingCart.setFinalPrice(finalPrice);
@@ -72,8 +65,7 @@ public class ProductPresenter {
                         modelId, currentSize.getVariantId(), name, finalPrice, currentSize.getName(), urlImage, 1, currency);
             }
             if (this.productView != null) {
-                AppDatabase.getInstance(this.productView.getContext()).shoppingCartDao().
-                        insertProducts(shoppingCart);
+                shoppingCartInteractor.addProductByCurrentUser(shoppingCart);
                 productView.updateCartIcon();
             }
         }
@@ -90,7 +82,7 @@ public class ProductPresenter {
                 addProductToShoppingCart(storeId, selectedItem, productName, currentSize, finalPrice, urlImage, currency);
             }
             if (this.productView != null) {
-                productView.loadSelectionFinished(currentSize);
+                productView.selectionFinished(currentSize);
             }
         }
     }
@@ -107,7 +99,7 @@ public class ProductPresenter {
     }
 
     public void onClickShoppingCart() {
-        if (AppDatabase.getInstance(productView.getContext()).shoppingCartDao().countProductsByCustomer(CustomerProfile.getCustomerProfile().getEmail()) > 0) {
+        if (shoppingCartInteractor.countAllCurrentUserProducts() > 0) {
             productView.goToShoppingCart();
         } else {
             productView.showEmptyCartMessage();

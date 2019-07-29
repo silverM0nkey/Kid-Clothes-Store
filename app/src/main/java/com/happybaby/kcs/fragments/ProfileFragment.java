@@ -14,9 +14,7 @@ import android.widget.Toast;
 import com.happybaby.kcs.activities.LoginActivity;
 import com.happybaby.kcs.activities.MainActivity;
 import com.happybaby.kcs.R;
-import com.happybaby.kcs.activities.interfaces.ProductView;
 import com.happybaby.kcs.fragments.interfaces.ProfileView;
-import com.happybaby.kcs.models.CustomerProfile;
 import com.happybaby.kcs.presenters.ProfilePresenter;
 
 public class ProfileFragment extends Fragment implements ProfileView, View.OnClickListener {

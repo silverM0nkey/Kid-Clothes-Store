@@ -1,23 +1,11 @@
 package com.happybaby.kcs.presenters;
 
 import com.happybaby.kcs.activities.interfaces.FilterView;
-import com.happybaby.kcs.activities.interfaces.LoginView;
-import com.happybaby.kcs.bd.room.AppDatabase;
-import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
-import com.happybaby.kcs.models.CustomerProfile;
 import com.happybaby.kcs.models.FilterListModel;
-import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
-import com.happybaby.kcs.restapi.gooco.ConnectionsProfile;
-import com.happybaby.kcs.restapi.gooco.requests.RequestLogin;
-import com.happybaby.kcs.restapi.gooco.responses.ResponseCustomer;
-import com.happybaby.kcs.restapi.gooco.responses.ResponseLogin;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 
 public class FilterPresenter {
@@ -84,9 +72,7 @@ public class FilterPresenter {
         filterView.notifyDataSetChanged();
     }
 
-
     public void fillResult() {
-
         ArrayList<String> selectedColors = filterListModelList.
                 stream().filter(c -> c.getCheck()).map(c -> c.getName()).collect(Collectors.toCollection(ArrayList::new));
 
@@ -94,9 +80,6 @@ public class FilterPresenter {
                 filterMaxPrice != DEFAULT_PRICES_VALUE ? filterMaxPrice : null,
                 filterMinPrice != DEFAULT_PRICES_VALUE ? filterMinPrice : null);
     }
-
-
-
 
 
     public void unbindView(){

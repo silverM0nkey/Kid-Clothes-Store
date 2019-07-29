@@ -24,13 +24,11 @@ import com.happybaby.kcs.activities.interfaces.MainView;
 import com.happybaby.kcs.adapters.CategoriesExpandableListAdapter;
 import com.happybaby.kcs.adapters.MenuAdapter;
 import com.happybaby.kcs.adapters.SimpleFragmentPagerAdapter;
-import com.happybaby.kcs.bd.room.AppDatabase;
 import com.happybaby.kcs.components.NonSwipeableViewPager;
 import com.happybaby.kcs.fragments.CatalogFragment;
 import com.happybaby.kcs.fragments.ProfileFragment;
 import com.happybaby.kcs.fragments.StoresFragment;
 import com.happybaby.kcs.models.fixed.MenuItemModel;
-import com.happybaby.kcs.models.CustomerProfile;
 import com.happybaby.kcs.presenters.MainPresenter;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseCategory;
 
@@ -189,7 +187,7 @@ public class MainActivity extends BaseActivity implements MainView,
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_cart){
-            if (AppDatabase.getInstance(this).shoppingCartDao().countProductsByCustomer(CustomerProfile.getCustomerProfile().getEmail()) > 0) {
+            if (mainPresenter.countAllProductsByCurrentUser() > 0) {
                 Intent intent = new Intent(this, ShoppingCartActivity.class);
                 startActivity(intent);
             } else {
@@ -204,22 +202,21 @@ public class MainActivity extends BaseActivity implements MainView,
         mDrawerLayout.closeDrawer(Gravity.LEFT, true);
     }
 
-    @Override
-    public void onBackPressed() {
-        //Do nothing
-    }
-
     public void shoppingCartInActionbarUpdate() {
         if (itemCart != null) {
             LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
-            setBadgeCount(this, icon,
-                    mainPresenter.getNumberOfProducts(CustomerProfile.getCustomerProfile().getEmail()).toString());
+            setBadgeCount(this, icon, mainPresenter.getNumberOfProducts().toString());
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //Do nothing
     }
 
     public Context getContext() {

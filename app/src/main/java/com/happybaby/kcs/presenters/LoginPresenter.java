@@ -1,9 +1,8 @@
 package com.happybaby.kcs.presenters;
 
 import com.happybaby.kcs.activities.interfaces.LoginView;
-import com.happybaby.kcs.bd.room.AppDatabase;
-import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.models.CustomerProfile;
+import com.happybaby.kcs.models.interactors.ShoppingCartInteractor;
 import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
 import com.happybaby.kcs.restapi.gooco.ConnectionsProfile;
 import com.happybaby.kcs.restapi.gooco.requests.RequestLogin;
@@ -19,9 +18,11 @@ import retrofit2.Response;
 public class LoginPresenter extends BasePresenter {
 
     LoginView loginView;
+    ShoppingCartInteractor shoppingCartInteractor;
 
     public LoginPresenter(LoginView loginView) {
         this.loginView = loginView;
+        shoppingCartInteractor = new ShoppingCartInteractor(loginView.getContext());
     }
 
     public void login(String email, String password) {
@@ -50,14 +51,8 @@ public class LoginPresenter extends BasePresenter {
                                         responseCustomer.getPhone(),
                                         responseCustomer.getIsGoccoAndFriends());
 
-                                List<ShoppingCartProduct> productList = AppDatabase.
-                                        getInstance(loginView.getContext()).shoppingCartDao().findProductsByCustomer(CustomerProfile.CUSTOMER_ANONYMOUS);
+                                shoppingCartInteractor.changeShoppingCartInLogin(responseCustomer.getEmail());
 
-                                for (ShoppingCartProduct product: productList){
-                                    product.setCustomer(responseCustomer.getEmail());
-                                }
-                                AppDatabase.getInstance(loginView.getContext()).shoppingCartDao().insertAll(productList);
-                                AppDatabase.getInstance(loginView.getContext()).shoppingCartDao().deleteProductsByCustomer(CustomerProfile.CUSTOMER_ANONYMOUS);
                                 loginView.loginFinished();
                             } else {
                                 loginView.loginFail();

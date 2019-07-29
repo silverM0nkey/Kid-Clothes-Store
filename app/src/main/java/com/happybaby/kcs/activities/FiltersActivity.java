@@ -113,11 +113,6 @@ public class FiltersActivity extends BaseActivity implements FilterView, View.On
     }
 
     @Override
-    public Context getContext() {
-        return null;
-    }
-
-    @Override
     public boolean onKey(View view, int keyCode, KeyEvent event) {
         if (view.getId() == R.id.min_price) {
             filterPresenter.onChangeMinPrice(minPrice.getText().toString());
@@ -125,5 +120,10 @@ public class FiltersActivity extends BaseActivity implements FilterView, View.On
             filterPresenter.onChangeMaxPrice(maxPrice.getText().toString());
         }
         return true;
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 }
