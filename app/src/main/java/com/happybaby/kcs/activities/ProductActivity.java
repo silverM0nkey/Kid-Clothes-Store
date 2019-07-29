@@ -138,7 +138,7 @@ public class ProductActivity extends BaseActivity implements ProductView,
     @Override
     protected void onStart() {
         super.onStart();
-        updateCartIcon();
+        updateCartIcon(false);
     }
 
     @Override
@@ -222,12 +222,15 @@ public class ProductActivity extends BaseActivity implements ProductView,
         productPresenter.selectSize(sizeSelected);
     }
 
-    public void updateCartIcon() {
+    public void updateCartIcon(boolean showMessage) {
         if (itemCart != null) {
             LayerDrawable icon = (LayerDrawable) itemCart.getIcon();
             setBadgeCount(this, icon, productPresenter.getNumberOfProducts().toString());
+
+            if (showMessage) {
+                Toast.makeText(this, getResources().getString(R.string.product_added), Toast.LENGTH_SHORT).show();
+            }
         }
-        Toast.makeText(this, getResources().getString(R.string.product_added), Toast.LENGTH_SHORT).show();
     }
 
     public void loadSizeModelFinished(List<SizeModel> items) {

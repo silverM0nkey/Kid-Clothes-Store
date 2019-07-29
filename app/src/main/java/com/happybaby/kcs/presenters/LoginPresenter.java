@@ -2,7 +2,6 @@ package com.happybaby.kcs.presenters;
 
 import com.happybaby.kcs.activities.interfaces.LoginView;
 import com.happybaby.kcs.models.CustomerProfile;
-import com.happybaby.kcs.models.interactors.ShoppingCartInteractor;
 import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
 import com.happybaby.kcs.restapi.gooco.ConnectionsProfile;
 import com.happybaby.kcs.restapi.gooco.requests.RequestLogin;
@@ -18,11 +17,10 @@ import retrofit2.Response;
 public class LoginPresenter extends BasePresenter {
 
     LoginView loginView;
-    ShoppingCartInteractor shoppingCartInteractor;
 
     public LoginPresenter(LoginView loginView) {
+        super(loginView.getContext());
         this.loginView = loginView;
-        shoppingCartInteractor = new ShoppingCartInteractor(loginView.getContext());
     }
 
     public void login(String email, String password) {

@@ -1,10 +1,7 @@
 package com.happybaby.kcs.activities.interfaces;
 
-import android.content.Context;
-
-public interface InitialView {
+public interface InitialView extends BaseView {
 
     void loadStoreFinished(Integer storeId);
     void loadStoreFail();
-    Context getContext();
 }

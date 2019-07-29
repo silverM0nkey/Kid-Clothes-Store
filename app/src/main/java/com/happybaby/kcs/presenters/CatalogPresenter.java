@@ -3,7 +3,7 @@ package com.happybaby.kcs.presenters;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.happybaby.kcs.Helpers.CatalogHelper;
+import com.happybaby.kcs.helpers.CatalogHelper;
 import com.happybaby.kcs.R;
 import com.happybaby.kcs.activities.FiltersActivity;
 import com.happybaby.kcs.activities.ProductActivity;
@@ -37,7 +37,7 @@ public class CatalogPresenter extends BasePresenter{
     private String categoryName;
 
     public CatalogPresenter(CatalogView catalogView, String storeId) {
-        super();
+        super(catalogView.getContext());
         this.filterQueryModel = new FilterQueryModel();
         this.catalogView =  catalogView;
         this.storeId = storeId;

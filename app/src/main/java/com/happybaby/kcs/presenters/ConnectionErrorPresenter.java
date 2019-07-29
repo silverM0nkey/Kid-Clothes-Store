@@ -13,6 +13,7 @@ public class ConnectionErrorPresenter extends BasePresenter {
     ConnectionErrorView connectionErrorView;
 
     public ConnectionErrorPresenter(ConnectionErrorView connectionErrorView) {
+        super(connectionErrorView.getContext());
         this.connectionErrorView = connectionErrorView;
     }
 

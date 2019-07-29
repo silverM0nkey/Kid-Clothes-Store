@@ -69,7 +69,7 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
     @Override
     public void onStart() {
         super.onStart();
-        profilePresenter.setUp();
+        profilePresenter.loadProfile();
     }
 
     @Override
@@ -78,8 +78,8 @@ public class ProfileFragment extends Fragment implements ProfileView, View.OnCli
         profilePresenter.unbindView();
     }
 
-    public void setUp(){
-        profilePresenter.setUp();
+    public void updateProfile(){
+        profilePresenter.loadProfile();
     }
 
     public void setLogin() {

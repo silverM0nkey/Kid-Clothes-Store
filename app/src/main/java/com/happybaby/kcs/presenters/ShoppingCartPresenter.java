@@ -4,20 +4,18 @@ import com.happybaby.kcs.activities.interfaces.ShoppingCartListener;
 import com.happybaby.kcs.activities.interfaces.ShoppingCartView;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.models.CustomerProfile;
-import com.happybaby.kcs.models.interactors.ShoppingCartInteractor;
 import com.happybaby.kcs.utils.Util;
 
 import java.util.List;
 
-public class ShoppingCartPresenter implements ShoppingCartListener {
+public class ShoppingCartPresenter extends BasePresenter implements ShoppingCartListener {
 
     private ShoppingCartView shoppingCartView;
     private List<ShoppingCartProduct> shoppingCartList;
-    private ShoppingCartInteractor shoppingCartInteractor;
 
     public ShoppingCartPresenter(ShoppingCartView shoppingCartView) {
+        super(shoppingCartView.getContext());
         this.shoppingCartView =  shoppingCartView;
-        this.shoppingCartInteractor = new ShoppingCartInteractor(shoppingCartView.getContext());
     }
 
     public void updateTotalPrice() {
@@ -30,7 +28,6 @@ public class ShoppingCartPresenter implements ShoppingCartListener {
         this.shoppingCartView.setTotalProducts(String.format("%s %.2f", Util.getSymbol(currency), totalPrice));
         this.shoppingCartView.setTotal(String.format("%s %.2f",  Util.getSymbol(currency), totalPrice));
     }
-
 
     public void onRemoveProduct(String modelId, String variantId) {
         ShoppingCartProduct productToRemove = this.shoppingCartList.stream().filter(p -> p.getModelId().equals(modelId) && p.getVariantId().equals(variantId)).findFirst().orElse(null);
@@ -74,7 +71,7 @@ public class ShoppingCartPresenter implements ShoppingCartListener {
         if (shoppingCartView != null) {
             shoppingCartView.loadFinished(this.shoppingCartList);
         }
-    };
+    }
 
     public void unbindView(){
         this.shoppingCartView = null;

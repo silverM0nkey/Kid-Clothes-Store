@@ -1,11 +1,11 @@
 package com.happybaby.kcs.presenters;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
+import com.happybaby.kcs.models.interactors.ShoppingCartInteractor;
 import com.happybaby.kcs.restapi.gooco.ConnectionsProfile;
 import com.happybaby.kcs.restapi.gooco.client.RestClient;
 
@@ -18,8 +18,10 @@ public class BasePresenter {
 
     protected Retrofit retrofit;
     protected RestClient restClient;
+    protected ShoppingCartInteractor shoppingCartInteractor;
 
-    public BasePresenter() {
+    public BasePresenter(Context context) {
+        this.shoppingCartInteractor = new ShoppingCartInteractor(context);
         setupRestClient();
     }
 
@@ -33,5 +35,14 @@ public class BasePresenter {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         restClient = retrofit.create(RestClient.class);
+    }
+
+    public Integer getNumberOfProducts() {
+        List<ShoppingCartProduct> products = shoppingCartInteractor.getCurrentUserProducts();
+        Integer totalNumberOfProducts = 0;
+        for (ShoppingCartProduct product: products){
+            totalNumberOfProducts = totalNumberOfProducts + product.getQty();
+        }
+        return totalNumberOfProducts;
     }
 }

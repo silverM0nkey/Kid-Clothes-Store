@@ -11,7 +11,7 @@ public class ProfilePresenter {
         this.profileView = profileView;
     }
 
-    public void setUp() {
+    public void loadProfile() {
         if (CustomerProfile.getCustomerProfile().getEmail().equals(CustomerProfile.CUSTOMER_ANONYMOUS)) {
             if (profileView != null) {
                 profileView.setLogin();
@@ -28,7 +28,7 @@ public class ProfilePresenter {
 
     public void logout() {
         CustomerProfile.getCustomerProfile().logout();
-        setUp();
+        loadProfile();
     }
 
     public void unbindView(){

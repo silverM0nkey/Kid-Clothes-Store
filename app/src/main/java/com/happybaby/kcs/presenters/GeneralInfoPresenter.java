@@ -14,7 +14,7 @@ public class GeneralInfoPresenter extends BasePresenter {
     private GeneralInfoView generalInfoView;
 
     public GeneralInfoPresenter(GeneralInfoView generalInfoView) {
-        super();
+        super(generalInfoView.getContext());
         this.generalInfoView = generalInfoView;
     }
 

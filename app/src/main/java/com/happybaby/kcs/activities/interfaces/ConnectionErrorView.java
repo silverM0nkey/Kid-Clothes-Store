@@ -1,10 +1,7 @@
 package com.happybaby.kcs.activities.interfaces;
 
-import android.content.Context;
-
-public interface ConnectionErrorView {
+public interface ConnectionErrorView extends BaseView {
 
     void finishActivity();
     void hideProgressBar();
-    Context getContext();
 }

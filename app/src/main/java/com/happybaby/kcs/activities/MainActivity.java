@@ -122,7 +122,7 @@ public class MainActivity extends BaseActivity implements MainView,
                 switch (item.getItemId()) {
                     case R.id.navigation_profile:
                         viewPager.setCurrentItem(PROFILE_POSITION);
-                        profileFragment.setUp();
+                        profileFragment.updateProfile();
                         setTitle(getResources().getString(R.string.title_my_profil));
                         break;
                     case R.id.navigation_catalog:

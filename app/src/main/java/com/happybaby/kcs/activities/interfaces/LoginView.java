@@ -1,11 +1,7 @@
 package com.happybaby.kcs.activities.interfaces;
 
-import android.content.Context;
-
-
-public interface LoginView {
+public interface LoginView extends BaseView {
 
     void loginFinished();
     void loginFail();
-    Context getContext();
 }

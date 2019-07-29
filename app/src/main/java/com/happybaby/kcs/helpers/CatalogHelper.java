@@ -1,4 +1,4 @@
-package com.happybaby.kcs.Helpers;
+package com.happybaby.kcs.helpers;
 
 import android.content.Context;
 

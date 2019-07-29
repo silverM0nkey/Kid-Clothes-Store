@@ -1,10 +1,7 @@
 package com.happybaby.kcs.activities.interfaces;
 
-import android.content.Context;
-
-public interface GeneralInfoView {
+public interface GeneralInfoView extends BaseView {
 
     void loadInfoFinished(String content);
     void loadInfoFail();
-    Context getContext();
 }

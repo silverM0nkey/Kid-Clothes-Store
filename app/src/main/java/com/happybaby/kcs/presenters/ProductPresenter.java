@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ProductPresenter {
+public class ProductPresenter extends BasePresenter{
 
     private ProductView productView;
     private boolean fromAdd;
@@ -26,9 +26,9 @@ public class ProductPresenter {
     private String urlImage;
     private String currency;
     private ArrayList<ResponseSize> sizes;
-    private ShoppingCartInteractor shoppingCartInteractor;
 
     public ProductPresenter(ProductView productView, String storeId, String selectedItem, String productName, Integer originalPrice, Integer finalPrice, String urlImage, String currency, ArrayList<ResponseSize> sizes) {
+        super(productView.getContext());
         this.productView = productView;
         this.storeId = storeId;
         this.selectedItem = selectedItem;
@@ -38,20 +38,6 @@ public class ProductPresenter {
         this.urlImage = urlImage;
         this.currency = currency;
         this.sizes = sizes;
-        this.shoppingCartInteractor = new ShoppingCartInteractor(this.productView.getContext());
-    }
-
-    public Integer getNumberOfProducts() {
-        if (this.productView != null) {
-            List<ShoppingCartProduct> products = shoppingCartInteractor.getCurrentUserProducts();
-            Integer totalNumberOfProducts = 0;
-            for (ShoppingCartProduct product : products) {
-                totalNumberOfProducts = totalNumberOfProducts + product.getQty();
-            }
-            return totalNumberOfProducts;
-        } else {
-           return null;
-        }
     }
 
     private void addProductToShoppingCart(String storeId, String modelId, String name, ResponseSize currentSize, Integer finalPrice, String urlImage, String currency) {
@@ -64,15 +50,13 @@ public class ProductPresenter {
                 shoppingCart = new ShoppingCartProduct(CustomerProfile.getCustomerProfile().getEmail(), storeId,
                         modelId, currentSize.getVariantId(), name, finalPrice, currentSize.getName(), urlImage, 1, currency);
             }
-            if (this.productView != null) {
-                shoppingCartInteractor.addProductByCurrentUser(shoppingCart);
-                productView.updateCartIcon();
-            }
+            shoppingCartInteractor.addProductByCurrentUser(shoppingCart);
+            productView.updateCartIcon(true);
         }
     }
 
     public boolean isAddButtonEnabled(){
-        return this.sizes.stream().filter(s -> s.getStockQty() > 0).findFirst().orElse(null) == null;
+        return this.sizes.stream().filter(s -> s.getStockQty() > 0).findFirst().orElse(null) != null;
     }
 
     public void selectSize(int sizeSelected) {

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,7 +22,7 @@ import com.happybaby.kcs.presenters.FilterPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FiltersActivity extends BaseActivity implements FilterView, View.OnKeyListener, View.OnClickListener, ListView.OnItemClickListener {
+public class FiltersActivity extends BaseActivity implements FilterView, View.OnClickListener, ListView.OnItemClickListener {
 
     final static public String PARAM_AVAILABLE_COLOURS = "availableColours";
     final static public String PARAM_COLOUR_FILTER = "colourFilter";
@@ -56,8 +58,27 @@ public class FiltersActivity extends BaseActivity implements FilterView, View.On
         maxPrice =findViewById(R.id.max_price);
         minPrice = findViewById(R.id.min_price);
 
-        minPrice.setOnKeyListener(this);
-        maxPrice.setOnKeyListener(this);
+        minPrice.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {}
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterPresenter.onChangeMinPrice(minPrice.getText().toString());
+            }
+        });
+
+        maxPrice.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {}
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterPresenter.onChangeMaxPrice(maxPrice.getText().toString());
+            }
+        });
 
         applyFilters.setOnClickListener(this);
         removeFilters.setOnClickListener(this);
@@ -110,16 +131,6 @@ public class FiltersActivity extends BaseActivity implements FilterView, View.On
 
     public void notifyDataSetChanged() {
         colorsListAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public boolean onKey(View view, int keyCode, KeyEvent event) {
-        if (view.getId() == R.id.min_price) {
-            filterPresenter.onChangeMinPrice(minPrice.getText().toString());
-        } else if (view.getId() == R.id.max_price) {
-            filterPresenter.onChangeMaxPrice(maxPrice.getText().toString());
-        }
-        return true;
     }
 
     @Override
