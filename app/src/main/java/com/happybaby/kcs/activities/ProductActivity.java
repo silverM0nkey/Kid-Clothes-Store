@@ -173,7 +173,7 @@ public class ProductActivity extends BaseActivity implements ProductView,
         } else if (view.getId() == R.id.shopping_guide_text) {
             Intent intent = new Intent(this, GeneralInfoActivity.class);
             intent.putExtra(GeneralInfoActivity.PARAM_TYPE, GeneralInfoActivity.Types.TYPE_SHOPPING_GUIDE.ordinal());
-            intent.putExtra(GeneralInfoActivity.PARAM_STORE_ID, this.storeId);
+            intent.putExtra(GeneralInfoActivity.PARAM_STORE_ID, Integer.valueOf(this.storeId));
             startActivity(intent);
         }
     }
