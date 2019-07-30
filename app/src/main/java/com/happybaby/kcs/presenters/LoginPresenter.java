@@ -19,7 +19,7 @@ public class LoginPresenter extends BasePresenter {
     LoginView loginView;
 
     public LoginPresenter(LoginView loginView) {
-        super(loginView.getContext());
+        super();
         this.loginView = loginView;
     }
 

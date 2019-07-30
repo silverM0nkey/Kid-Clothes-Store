@@ -4,17 +4,21 @@ import android.content.Context;
 
 import com.happybaby.kcs.bd.room.AppDatabase;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
+import com.happybaby.kcs.dagger.App;
 import com.happybaby.kcs.models.CustomerProfile;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ShoppingCartInteractor {
 
-    private Context context;
+    @Inject
+    Context context;
 
-    public ShoppingCartInteractor(Context context) {
-        this.context = context;
+    public ShoppingCartInteractor() {
+        App.getAppComponent().inject(this);
     }
 
     public void changeQytToCurrentUserProduct(String modelId, String variantId, int qty) {

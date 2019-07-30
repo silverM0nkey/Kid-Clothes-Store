@@ -1,7 +1,5 @@
 package com.happybaby.kcs.presenters;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
@@ -18,10 +16,12 @@ public class BasePresenter {
 
     protected Retrofit retrofit;
     protected RestClient restClient;
+
+
     protected ShoppingCartInteractor shoppingCartInteractor;
 
-    public BasePresenter(Context context) {
-        this.shoppingCartInteractor = new ShoppingCartInteractor(context);
+    public BasePresenter() {
+        this.shoppingCartInteractor = new ShoppingCartInteractor();
         setupRestClient();
     }
 

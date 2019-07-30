@@ -19,7 +19,7 @@ public class InitialPresenter extends BasePresenter {
     InitialView initialView;
 
     public InitialPresenter(InitialView initialView) {
-        super(initialView.getContext());
+        super();
         this.initialView = initialView;
     }
 

@@ -14,7 +14,7 @@ public class MainPresenter extends BasePresenter {
     MainView mainView;
 
     public MainPresenter(MainView mainView) {
-        super(mainView.getContext());
+        super();
         this.mainView = mainView;
     }
 

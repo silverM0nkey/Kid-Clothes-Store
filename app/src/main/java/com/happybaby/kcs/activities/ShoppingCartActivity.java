@@ -20,6 +20,8 @@ import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 
 public class ShoppingCartActivity extends BaseActivity implements ShoppingCartView {
 
@@ -30,6 +32,9 @@ public class ShoppingCartActivity extends BaseActivity implements ShoppingCartVi
     private ShoppingCartRecyclerListAdapter shoppingCartRecyclerListAdapter;
     private ShoppingCartPresenter shoppingCartPresenter;
 
+    @Inject
+    Context context;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
@@ -39,7 +44,6 @@ public class ShoppingCartActivity extends BaseActivity implements ShoppingCartVi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
-
         this.shoppingCartPresenter = new ShoppingCartPresenter(this);
 
         setupToolbar();

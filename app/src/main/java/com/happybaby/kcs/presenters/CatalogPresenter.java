@@ -37,7 +37,7 @@ public class CatalogPresenter extends BasePresenter{
     private String categoryName;
 
     public CatalogPresenter(CatalogView catalogView, String storeId) {
-        super(catalogView.getContext());
+        super();
         this.filterQueryModel = new FilterQueryModel();
         this.catalogView =  catalogView;
         this.storeId = storeId;

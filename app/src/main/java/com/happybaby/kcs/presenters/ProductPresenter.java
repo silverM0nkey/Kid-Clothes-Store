@@ -28,7 +28,7 @@ public class ProductPresenter extends BasePresenter{
     private ArrayList<ResponseSize> sizes;
 
     public ProductPresenter(ProductView productView, String storeId, String selectedItem, String productName, Integer originalPrice, Integer finalPrice, String urlImage, String currency, ArrayList<ResponseSize> sizes) {
-        super(productView.getContext());
+        super();
         this.productView = productView;
         this.storeId = storeId;
         this.selectedItem = selectedItem;

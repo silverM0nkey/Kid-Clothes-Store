@@ -8,13 +8,15 @@ import com.happybaby.kcs.utils.Util;
 
 import java.util.List;
 
+
 public class ShoppingCartPresenter extends BasePresenter implements ShoppingCartListener {
 
     private ShoppingCartView shoppingCartView;
     private List<ShoppingCartProduct> shoppingCartList;
 
+
     public ShoppingCartPresenter(ShoppingCartView shoppingCartView) {
-        super(shoppingCartView.getContext());
+        super();
         this.shoppingCartView =  shoppingCartView;
     }
 

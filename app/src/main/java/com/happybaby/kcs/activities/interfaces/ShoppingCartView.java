@@ -1,6 +1,7 @@
 package com.happybaby.kcs.activities.interfaces;
 
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
+
 import java.util.List;
 
 public interface ShoppingCartView extends BaseView {
