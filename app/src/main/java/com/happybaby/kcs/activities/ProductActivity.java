@@ -1,6 +1,5 @@
 package com.happybaby.kcs.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.LayerDrawable;
@@ -250,9 +249,5 @@ public class ProductActivity extends BaseActivity implements ProductView,
 
     public void setFinalPrice(String finalPrice){
         finalPriceText.setText(finalPrice);
-    }
-
-    public Context getContext() {
-        return this;
     }
 }

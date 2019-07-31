@@ -103,8 +103,4 @@ public class ShoppingCartActivity extends BaseActivity implements ShoppingCartVi
     public void showPurchaseMessage() {
         Toast.makeText(this, getResources().getString(R.string.purchase_finish), Toast.LENGTH_SHORT).show();
     }
-
-    public Context getContext() {
-        return this;
-    }
 }

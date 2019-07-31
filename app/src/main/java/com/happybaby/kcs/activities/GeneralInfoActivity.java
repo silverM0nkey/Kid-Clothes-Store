@@ -1,6 +1,5 @@
 package com.happybaby.kcs.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.text.HtmlCompat;
 import android.widget.TextView;
@@ -37,11 +36,11 @@ public class GeneralInfoActivity extends BaseActivity implements GeneralInfoView
     }
 
     public void loadInfoFinished(String content) {
-        contentText.setText(HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY));
-    }
-
-    public void loadInfoFail() {
-        Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+        if (content !=null) {
+            contentText.setText(HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_LEGACY));
+        } else {
+            Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -55,9 +54,4 @@ public class GeneralInfoActivity extends BaseActivity implements GeneralInfoView
         finish();
         return true;
     }
-
-    public Context getContext(){
-        return this;
-    }
-
 }

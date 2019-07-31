@@ -81,7 +81,6 @@ public class FilterPresenter {
                 filterMinPrice != DEFAULT_PRICES_VALUE ? filterMinPrice : null);
     }
 
-
     public void unbindView(){
         this.filterView = null;
     }

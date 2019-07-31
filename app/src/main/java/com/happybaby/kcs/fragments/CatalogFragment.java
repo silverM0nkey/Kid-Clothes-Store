@@ -18,7 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.happybaby.kcs.activities.ConnectionErrorActivity;
 import com.happybaby.kcs.activities.FiltersActivity;
 import com.happybaby.kcs.activities.ProductActivity;
 import com.happybaby.kcs.R;
@@ -27,7 +29,6 @@ import com.happybaby.kcs.adapters.ProductsRecyclerListAdapter;
 import com.happybaby.kcs.adapters.SortOptionsListAdapter;
 import com.happybaby.kcs.fragments.interfaces.CatalogListener;
 import com.happybaby.kcs.fragments.interfaces.CatalogView;
-import com.happybaby.kcs.presenters.BasePresenter;
 import com.happybaby.kcs.presenters.CatalogPresenter;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseHome;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseProduct;
@@ -60,8 +61,6 @@ public class CatalogFragment extends Fragment implements LinearLayout.OnClickLis
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
      *
      * @param storeId Parameter 1.
      * @return A new instance of fragment CatalogFragment.
@@ -78,7 +77,9 @@ public class CatalogFragment extends Fragment implements LinearLayout.OnClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            catalogPresenter = new CatalogPresenter(this, getArguments().getString(PARAM_STORE_ID));
+            catalogPresenter = new CatalogPresenter(this,
+                    getArguments().getString(PARAM_STORE_ID),
+                    getResources().getStringArray(R.array.color_array));
         }
     }
 
@@ -98,7 +99,8 @@ public class CatalogFragment extends Fragment implements LinearLayout.OnClickLis
         sortBy.setOnClickListener(this);
         filterBy.setOnClickListener(this);
 
-        sortOptionsListAdapter = new SortOptionsListAdapter(getActivity(), catalogPresenter.getSortOptions());
+        sortOptionsListAdapter = new SortOptionsListAdapter(getActivity(),
+                catalogPresenter.getSortOptions(getContext().getResources().getStringArray(R.array.sort_options_array)));
         sortByListOptions.setAdapter(sortOptionsListAdapter);
         sortByListOptions.setOnItemClickListener(this);
         catalogPresenter.getHomeCategories();
@@ -216,6 +218,17 @@ public class CatalogFragment extends Fragment implements LinearLayout.OnClickLis
 
     public Context getContext() {
         return getActivity();
+    }
+
+    public void showConnectionErrorActivity() {
+        Intent intent = new Intent(getActivity(), ConnectionErrorActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+    }
+
+    public void showErrorServerMessage() {
+        Toast.makeText(getContext(), getContext().getResources().
+                getString(R.string.server_error), Toast.LENGTH_SHORT).show();
     }
 
     @Override

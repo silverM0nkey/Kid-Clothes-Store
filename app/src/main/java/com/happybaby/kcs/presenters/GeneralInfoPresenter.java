@@ -1,56 +1,40 @@
 package com.happybaby.kcs.presenters;
 
-import com.happybaby.kcs.activities.GeneralInfoActivity;
 import com.happybaby.kcs.activities.interfaces.GeneralInfoView;
-import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
+import com.happybaby.kcs.presenters.interfaces.IResponseGeneralInfo;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseGeneralInfo;
+import com.happybaby.kcs.restapi.gooco.services.Services;
 
-import retrofit2.Call;
-import retrofit2.Response;
 
-public class GeneralInfoPresenter extends BasePresenter {
+public class GeneralInfoPresenter extends BasePresenter implements IResponseGeneralInfo {
 
-    public static String shippingCostsContent = "<html><header><title>Shipping Costs</title></header><body><h1 ALIGN=\"center\" STYLE=\"font:36pt/40pt courier;\">Hello world!</h1></body></html>";
     private GeneralInfoView generalInfoView;
+    private Services services;
 
     public GeneralInfoPresenter(GeneralInfoView generalInfoView) {
         super();
         this.generalInfoView = generalInfoView;
+        this.services = new Services();
     }
 
-    public void loadContent(String storeId, int selectedItem){
-        Call<ResponseGeneralInfo> call = null;
-        if (selectedItem == GeneralInfoActivity.Types.TYPE_FAQ.ordinal()){
-            call = restClient.getFaq(storeId);        } else  if  (selectedItem == GeneralInfoActivity.Types.TYPE_SHOPPING_GUIDE.ordinal()) {
-            call = restClient.getShoppingGuide(storeId);
-        } else  if  (selectedItem == GeneralInfoActivity.Types.TYPE_SHIPPING_COSTS.ordinal()) {
-            //Endpoint returns malformed json
-            //call = restClient.getShippingCosts(storeId);
-        }  else  if  (selectedItem == GeneralInfoActivity.Types.TYPE_CONTACT.ordinal()) {
-            call = restClient.getContact(storeId);
+    public void loadContent(String storeId, int selectedItem) {
+        services.loadContent(storeId, selectedItem, this);
+    }
+
+    public void loadInfoFinished(ResponseGeneralInfo responseGeneralInfo){
+        if (generalInfoView != null) {
+            if (responseGeneralInfo != null) {
+                generalInfoView.loadInfoFinished(responseGeneralInfo.getContent());
+            } else {
+                generalInfoView.loadInfoFinished(null);
+            }
         }
+    }
 
-        if (call != null) {
-            call.enqueue(new CallbackWithRetry<ResponseGeneralInfo>(generalInfoView.getContext()) {
-
-                @Override
-                public void onResponse(Call<ResponseGeneralInfo> call, Response<ResponseGeneralInfo> response) {
-                    if (response.isSuccessful()) {
-                        ResponseGeneralInfo responseGeneralInfo = response.body();
-                        if (generalInfoView != null) {
-                            generalInfoView.loadInfoFinished(responseGeneralInfo.getContent());
-                        }
-                    } else {
-                        if (generalInfoView != null) {
-                            generalInfoView.loadInfoFail();
-                        }
-                    }
-                }
-            });
-        } else {
-            generalInfoView.loadInfoFinished(shippingCostsContent);
+    public void loadInfoFail() {
+        if (generalInfoView != null) {
+            generalInfoView.showConnectionErrorActivity();
         }
-
     }
 
     public void unbindView(){

@@ -4,7 +4,6 @@ import com.happybaby.kcs.activities.interfaces.ProductView;
 import com.happybaby.kcs.bd.room.entities.ShoppingCartProduct;
 import com.happybaby.kcs.models.CustomerProfile;
 import com.happybaby.kcs.models.SizeModel;
-import com.happybaby.kcs.models.interactors.ShoppingCartInteractor;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseSize;
 import com.happybaby.kcs.utils.Util;
 

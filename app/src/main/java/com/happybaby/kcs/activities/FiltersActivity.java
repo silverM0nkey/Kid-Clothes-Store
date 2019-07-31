@@ -1,12 +1,10 @@
 package com.happybaby.kcs.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -133,8 +131,4 @@ public class FiltersActivity extends BaseActivity implements FilterView, View.On
         colorsListAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public Context getContext() {
-        return this;
-    }
 }

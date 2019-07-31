@@ -1,6 +1,5 @@
 package com.happybaby.kcs.activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,11 +10,9 @@ import com.happybaby.kcs.R;
 import com.happybaby.kcs.activities.interfaces.ConnectionErrorView;
 import com.happybaby.kcs.presenters.ConnectionErrorPresenter;
 import com.happybaby.kcs.restapi.gooco.ConnectionsProfile;
-import com.happybaby.kcs.restapi.gooco.client.RestClient;
 
 public class ConnectionErrorActivity extends AppCompatActivity implements ConnectionErrorView, View.OnClickListener {
 
-    private RestClient restClient;
     ProgressBar progressBar;
     ConnectionErrorPresenter connectionErrorPresenter;
 
@@ -57,8 +54,7 @@ public class ConnectionErrorActivity extends AppCompatActivity implements Connec
         //Do nothing
     }
 
-    @Override
-    public Context getContext() {
-        return null;
+    public  void showConnectionErrorActivity() {
+        //Do nothing
     }
 }

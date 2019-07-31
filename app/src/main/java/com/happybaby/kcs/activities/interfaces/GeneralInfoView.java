@@ -1,7 +1,7 @@
 package com.happybaby.kcs.activities.interfaces;
 
-public interface GeneralInfoView extends BaseView {
+public interface GeneralInfoView {
 
     void loadInfoFinished(String content);
-    void loadInfoFail();
+    void showConnectionErrorActivity();
 }

@@ -1,8 +1,5 @@
 package com.happybaby.kcs.helpers;
 
-import android.content.Context;
-
-import com.happybaby.kcs.R;
 import com.happybaby.kcs.models.FilterQueryModel;
 import com.happybaby.kcs.restapi.gooco.ConnectionsProfile;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseProduct;
@@ -48,10 +45,9 @@ public class CatalogHelper {
         return  responseResults;
     }
 
-    static public ArrayList<String> getAvailableColors(List<ResponseProduct> responseResults, Context context) {
+    static public ArrayList<String> getAvailableColors(List<ResponseProduct> responseResults, String [] arrayColor) {
         List<String> colors;
         if (ConnectionsProfile.FIXED_COLOURS_AND_SIZES){
-            String [] arrayColor = context.getResources().getStringArray(R.array.color_array);
             colors = Arrays.asList(arrayColor);
         } else {
             colors = responseResults.stream().map(p -> p.getColor()).collect(Collectors.toList());

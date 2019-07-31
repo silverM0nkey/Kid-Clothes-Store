@@ -1,30 +1,27 @@
 package com.happybaby.kcs.presenters;
 
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.happybaby.kcs.helpers.CatalogHelper;
-import com.happybaby.kcs.R;
 import com.happybaby.kcs.activities.FiltersActivity;
 import com.happybaby.kcs.activities.ProductActivity;
 import com.happybaby.kcs.fragments.interfaces.CatalogView;
 import com.happybaby.kcs.models.FilterQueryModel;
 import com.happybaby.kcs.models.fixed.SortOptionItemModel;
-import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
+import com.happybaby.kcs.presenters.interfaces.IResponseHome;
+import com.happybaby.kcs.presenters.interfaces.IResponseProducts;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseHome;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseProduct;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseProductsResults;
+import com.happybaby.kcs.restapi.gooco.services.Services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import retrofit2.Call;
-import retrofit2.Response;
 
-public class CatalogPresenter extends BasePresenter{
+public class CatalogPresenter extends BasePresenter implements IResponseHome, IResponseProducts {
 
     private FilterQueryModel filterQueryModel;
     private ArrayList<ResponseProduct> responseResults;
@@ -35,58 +32,54 @@ public class CatalogPresenter extends BasePresenter{
 
     private String storeId;
     private String categoryName;
+    private Services services;
+    private String [] arrayColor;
 
-    public CatalogPresenter(CatalogView catalogView, String storeId) {
+    public CatalogPresenter(CatalogView catalogView, String storeId, String [] arrayColor) {
         super();
         this.filterQueryModel = new FilterQueryModel();
+        this.services = new Services();
         this.catalogView =  catalogView;
         this.storeId = storeId;
+        this.arrayColor = arrayColor;
     }
 
     public void getHomeCategories() {
-        Call<ResponseHome> call = restClient.getHome(this.storeId);
-        call.enqueue(new CallbackWithRetry<ResponseHome>(catalogView.getContext()) {
+        this.services.getHomeCategories(this.storeId, this);
+    }
 
-            @Override
-            public void onResponse(Call<ResponseHome> call, Response<ResponseHome> response) {
-                if (response.isSuccessful()) {
-                    ResponseHome responseHome = response.body();
-                    catalogView.onHomeResponse(responseHome);
-                } else {
-                    Toast.makeText(catalogView.getContext(), catalogView.getContext().getResources().
-                            getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    public void onResponseHome(ResponseHome responseHome){
+        if (responseHome != null) {
+            catalogView.onHomeResponse(responseHome);
+        } else {
+            catalogView.showErrorServerMessage();
+        }
+    }
+
+    public void onResponseHomeFail(){
+        catalogView.showConnectionErrorActivity();
     }
 
     public void getProducts(String categoryId, String categoryName) {
         this.categoryName = categoryName;
-        HashMap<String, String> params = new HashMap<>();
-        params.put(restClient.PARAM_CATEGORY_ID, categoryId);
+        this.services.getProducts(this.storeId, categoryId, this);
+    }
 
-        Call<ResponseProductsResults> call = restClient.getProducts(this.storeId, params);
-        call.enqueue(new CallbackWithRetry<ResponseProductsResults>(catalogView.getContext()) {
+    public void onResponseProductsResults(ResponseProductsResults responseProducts) {
+        if (responseProducts != null) {
+            responseResults = new ArrayList<>(responseProducts.getResults());
+            products = (ArrayList<ResponseProduct>) responseResults.clone();
+            catalogView.onProductsResponse(products);
+            availableColors = CatalogHelper.getAvailableColors(products, this.arrayColor);
+        } else {
+            catalogView.showErrorServerMessage();
+            catalogView.setProgressBarGone();
+        }
+    }
 
-            @Override
-            public void onResponse(Call<ResponseProductsResults> call, Response<ResponseProductsResults> response) {
-                if (response.isSuccessful()) {
-                    responseResults = new ArrayList<>(response.body().getResults());
-                    products = (ArrayList<ResponseProduct>) responseResults.clone();
-                    catalogView.onProductsResponse(products);
-                    availableColors = CatalogHelper.getAvailableColors(products, catalogView.getContext());
-                } else {
-                    Toast.makeText(catalogView.getContext(), catalogView.getContext().getResources().
-                            getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-                    catalogView.setProgressBarGone();
-                }
-            }
-
-            public void onFinalFailure() {
-                super.onFinalFailure();
-                catalogView.setProgressBarGone();
-            }
-        });
+    public void onResponseProductsFail() {
+        catalogView.setProgressBarGone();
+        catalogView.showConnectionErrorActivity();
     }
 
     public void filterResult(ArrayList <String> colourFilter, int maxPriceFilter, int  minPriceFilter) {
@@ -107,8 +100,7 @@ public class CatalogPresenter extends BasePresenter{
         catalogView.updateProductsRecyclerListAdapter(products);
     }
 
-    public List<SortOptionItemModel> getSortOptions(){
-        String[] options = catalogView.getContext().getResources().getStringArray(R.array.sort_options_array);
+    public List<SortOptionItemModel> getSortOptions(String[] options){
         this.sortOptions =  Arrays.stream(options).map(SortOptionItemModel::new).collect(Collectors.toList());
         return sortOptions;
     }

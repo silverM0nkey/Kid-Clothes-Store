@@ -1,6 +1,5 @@
 package com.happybaby.kcs.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -98,7 +97,6 @@ public class MainActivity extends BaseActivity implements MainView,
         mMenuList.setAdapter(menuAdapter);
         mMenuList.setOnItemClickListener(this);
 
-        Context context = this;
         this.storeId = getIntent().getExtras().getInt(PARAM_STORE_ID);
 
         mainPresenter.loadCategories(this.storeId);
@@ -217,9 +215,5 @@ public class MainActivity extends BaseActivity implements MainView,
     @Override
     public void onBackPressed() {
         //Do nothing
-    }
-
-    public Context getContext() {
-        return this;
     }
 }

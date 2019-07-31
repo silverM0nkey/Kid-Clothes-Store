@@ -1,6 +1,5 @@
 package com.happybaby.kcs.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -18,7 +17,7 @@ public class InitialActivity extends BaseActivity implements InitialView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial);
-        initialPresenter = new InitialPresenter(this);
+        initialPresenter = new InitialPresenter(this, getResources().getConfiguration().getLocales().get(0));
     }
 
     @Override
@@ -42,9 +41,5 @@ public class InitialActivity extends BaseActivity implements InitialView {
 
     public void loadStoreFail() {
         Toast.makeText(this, getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-    }
-
-    public Context getContext() {
-        return this;
     }
 }

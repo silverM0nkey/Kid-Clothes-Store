@@ -2,71 +2,50 @@ package com.happybaby.kcs.presenters;
 
 import com.happybaby.kcs.activities.interfaces.LoginView;
 import com.happybaby.kcs.models.CustomerProfile;
-import com.happybaby.kcs.restapi.gooco.CallbackWithRetry;
-import com.happybaby.kcs.restapi.gooco.ConnectionsProfile;
-import com.happybaby.kcs.restapi.gooco.requests.RequestLogin;
+import com.happybaby.kcs.presenters.interfaces.IResponseLogin;
 import com.happybaby.kcs.restapi.gooco.responses.ResponseCustomer;
-import com.happybaby.kcs.restapi.gooco.responses.ResponseLogin;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Response;
+import com.happybaby.kcs.restapi.gooco.services.Services;
 
 
-public class LoginPresenter extends BasePresenter {
+public class LoginPresenter extends BasePresenter implements IResponseLogin {
 
     LoginView loginView;
+    Services services;
 
     public LoginPresenter(LoginView loginView) {
         super();
         this.loginView = loginView;
+        this.services = new Services();
     }
 
     public void login(String email, String password) {
-        RequestLogin requestLogin = new RequestLogin(ConnectionsProfile.DEFAULT_GRANT_TYPE, email, password, ConnectionsProfile.CLIENT_ID);
-        Call<ResponseLogin> call = restClient.login(CustomerProfile.getCustomerProfile().getStoreId().toString(), requestLogin);
-        call.enqueue(new CallbackWithRetry<ResponseLogin>(loginView.getContext()) {
+        this.services.login(email, password, this);
+    }
 
-            @Override
-            public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
-                if (response.isSuccessful()) {
-                    ResponseLogin responseLogin = response.body();
 
-                    Call<ResponseCustomer> callGetCustomer = restClient.getCustomer(CustomerProfile.getCustomerProfile().getStoreId().toString(), responseLogin.getAccess_token());
-                    callGetCustomer.enqueue(new CallbackWithRetry<ResponseCustomer>(loginView.getContext()) {
+    public void loginFinished(ResponseCustomer responseCustomer){
+        if (responseCustomer!=null) {
+            CustomerProfile.getCustomerProfile().setData(
+                    responseCustomer.getIdentification(),
+                    responseCustomer.getEmail(),
+                    responseCustomer.getFirstName(),
+                    responseCustomer.getLastName(),
+                    responseCustomer.getPhone(),
+                    responseCustomer.getIsGoccoAndFriends());
 
-                        @Override
-                        public void onResponse(Call<ResponseCustomer> call, Response<ResponseCustomer> response) {
-                            if (response.isSuccessful()) {
-                                ResponseCustomer responseCustomer = response.body();
+            shoppingCartInteractor.changeShoppingCartInLogin(responseCustomer.getEmail());
 
-                                CustomerProfile.getCustomerProfile().setData(
-                                        responseCustomer.getIdentification(),
-                                        responseCustomer.getEmail(),
-                                        responseCustomer.getFirstName(),
-                                        responseCustomer.getLastName(),
-                                        responseCustomer.getPhone(),
-                                        responseCustomer.getIsGoccoAndFriends());
+            loginView.loginFinished();
+        } else {
+            loginView.loginFail();
+        }
+    }
 
-                                shoppingCartInteractor.changeShoppingCartInLogin(responseCustomer.getEmail());
-
-                                loginView.loginFinished();
-                            } else {
-                                loginView.loginFail();
-                            }
-                        }
-                    });
-
-                } else {
-                    loginView.loginFail();
-                }
-            }
-        });
+    public void loginFail(){
+        loginView.showConnectionErrorActivity();
     }
 
     public void unbindView(){
         this.loginView = null;
     }
-
 }

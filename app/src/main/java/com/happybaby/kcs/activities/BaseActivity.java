@@ -1,21 +1,13 @@
 package com.happybaby.kcs.activities;
 
-
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.happybaby.kcs.R;
 import com.happybaby.kcs.drawables.BadgeDrawable;
-import com.happybaby.kcs.restapi.gooco.ConnectionsProfile;
-import com.happybaby.kcs.restapi.gooco.client.RestClient;
-
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public abstract class BaseActivity extends AppCompatActivity  {
 
@@ -46,5 +38,11 @@ public abstract class BaseActivity extends AppCompatActivity  {
         badge.setCount(count);
         icon.mutate();
         icon.setDrawableByLayerId(R.id.ic_badge, badge);
+    }
+
+    public void showConnectionErrorActivity() {
+        Intent intent = new Intent(this, ConnectionErrorActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 }

@@ -67,10 +67,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
     public void loginFail() {
         Toast.makeText(this, getResources().getString(R.string.login_faild), Toast.LENGTH_SHORT);
     }
-
-    public Context getContext() {
-        return this;
-    }
 }
 
 
